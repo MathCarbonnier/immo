@@ -1,0 +1,21 @@
+/* Form container styling */
+.container {
+  max-width: 800px;
+}
+
+/* Required field indicator */
+.form-label::after {
+  content: " *";
+  color: red;
+}
+
+/* Hide the required indicator for non-required fields */
+label:not([for="titre"]):not([for="surface"]):not([for="prix"])::after {
+  content: "";
+}
+
+/* Image preview styling */
+.img-thumbnail {
+  max-width: 100%;
+  object-fit: contain;
+}

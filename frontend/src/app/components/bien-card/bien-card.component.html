@@ -1,0 +1,40 @@
+<div class="card mb-3" 
+     [class.border-primary]="selected" 
+     (click)="onCardClick()" 
+     style="cursor: pointer;">
+  <div class="position-relative">
+    <img [src]="getImageSrc()" 
+         class="card-img-top" 
+         alt="{{ bien.titre }}" 
+         style="height: 180px; object-fit: cover;"
+         (click)="onImageClick($event)">
+
+    <!-- Carousel indicators for multiple images -->
+    <div *ngIf="facadeImages.length > 1" class="carousel-indicators position-absolute bottom-0 start-50 translate-middle-x mb-1">
+      <button *ngFor="let img of facadeImages; let i = index" 
+              type="button" 
+              [class.active]="i === currentImageIndex"
+              class="bg-white"
+              style="width: 8px; height: 8px; border-radius: 50%;"
+              (click)="$event.stopPropagation(); currentImageIndex = i"></button>
+    </div>
+
+    <!-- Checkbox for selection mode -->
+    <div *ngIf="selectable" class="position-absolute top-0 end-0 m-2">
+      <div class="form-check">
+        <input class="form-check-input" 
+               type="checkbox" 
+               [checked]="selected" 
+               (click)="$event.stopPropagation()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <h5 class="card-title">{{ bien.titre }}</h5>
+    <div class="d-flex justify-content-between">
+      <p class="card-text"><small>{{ bien.surface }} m²</small></p>
+      <p class="card-text"><strong>{{ bien.prix | currency:'EUR' }}</strong></p>
+    </div>
+  </div>
+</div>

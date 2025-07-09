@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: immo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: immo
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Flyway for database migrations
+  flyway:
+    image: flyway/flyway:9.20
+    container_name: immo-flyway
+    command: -url=jdbc:mysql://mysql:3306/immo -user=root -password=root -connectRetries=60 migrate
+    volumes:
+      - ./backend/src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Backend (Quarkus)
+#  backend:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    container_name: immo-backend
+#    environment:
+#      DB_HOST: mysql
+#      DB_PORT: 3306
+#      DB_NAME: immo
+#      DB_USER: root
+#      DB_PASSWORD: root
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      flyway:
+#        condition: service_completed_successfully
+#
+#  # Frontend (Angular)
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    container_name: immo-frontend
+#    ports:
+#      - "4200:80"
+#    depends_on:
+#      - backend
+
+volumes:
+  mysql-data:

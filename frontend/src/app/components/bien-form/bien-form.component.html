@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <h2>Create New Property</h2>
+  
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+  
+  <form [formGroup]="bienForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="titre" class="form-label">Title</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="titre" 
+        formControlName="titre" 
+        [ngClass]="{ 'is-invalid': submitted && f['titre'].errors }"
+      >
+      <div *ngIf="submitted && f['titre'].errors" class="invalid-feedback">
+        <div *ngIf="f['titre'].errors['required']">Title is required</div>
+      </div>
+    </div>
+    
+    <div class="mb-3">
+      <label for="surface" class="form-label">Surface (m²)</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        id="surface" 
+        formControlName="surface" 
+        [ngClass]="{ 'is-invalid': submitted && f['surface'].errors }"
+      >
+      <div *ngIf="submitted && f['surface'].errors" class="invalid-feedback">
+        <div *ngIf="f['surface'].errors['required']">Surface is required</div>
+        <div *ngIf="f['surface'].errors['min']">Surface must be greater than 0</div>
+      </div>
+    </div>
+    
+    <div class="mb-3">
+      <label for="prix" class="form-label">Price (€)</label>
+      <input 
+        type="number" 
+        class="form-control" 
+        id="prix" 
+        formControlName="prix" 
+        [ngClass]="{ 'is-invalid': submitted && f['prix'].errors }"
+      >
+      <div *ngIf="submitted && f['prix'].errors" class="invalid-feedback">
+        <div *ngIf="f['prix'].errors['required']">Price is required</div>
+        <div *ngIf="f['prix'].errors['min']">Price must be greater than 0</div>
+      </div>
+    </div>
+    
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea 
+        class="form-control" 
+        id="description" 
+        formControlName="description" 
+        rows="3"
+      ></textarea>
+    </div>
+    
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <input 
+        type="file" 
+        class="form-control" 
+        id="image" 
+        (change)="onFileChange($event)" 
+        accept="image/*"
+      >
+    </div>
+    
+    <!-- Image preview -->
+    <div *ngIf="imagePreview" class="mb-3">
+      <h5>Image Preview:</h5>
+      <img [src]="imagePreview" class="img-thumbnail" style="max-height: 200px;">
+    </div>
+    
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+        Save Property
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+    </div>
+  </form>
+</div>

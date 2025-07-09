@@ -1,0 +1,31 @@
+<div class="dialog-container">
+  <h2 class="dialog-title">Confirmation de suppression</h2>
+  <div class="dialog-content">
+    <p *ngIf="data.biens.length > 1">Êtes-vous sûr de vouloir supprimer ces {{ data.biens.length }} biens ?</p>
+    <p *ngIf="data.biens.length === 1">Êtes-vous sûr de vouloir supprimer ce bien ?</p>
+
+    <div class="property-cards">
+      <div *ngFor="let bien of data.biens" class="property-card">
+        <div class="card mb-3">
+          <div class="position-relative">
+            <img [src]="getImageSrc(bien.image)" 
+                 class="card-img-top" 
+                 alt="{{ bien.titre }}" 
+                 style="height: 180px; object-fit: cover;">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ bien.titre }}</h5>
+            <div class="d-flex justify-content-between">
+              <p class="card-text"><small>{{ bien.surface }} m²</small></p>
+              <p class="card-text"><strong>{{ bien.prix | currency:'EUR' }}</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn btn-outline-secondary cancel-button" (click)="onCancelClick()">Annuler</button>
+    <button class="btn btn-danger delete-button" (click)="onConfirmClick()">Supprimer</button>
+  </div>
+</div>

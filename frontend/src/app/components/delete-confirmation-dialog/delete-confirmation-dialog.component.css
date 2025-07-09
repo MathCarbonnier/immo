@@ -1,0 +1,70 @@
+.property-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.property-card {
+  flex: 0 0 calc(50% - 8px);
+  min-width: 250px;
+}
+
+@media (max-width: 768px) {
+  .property-card {
+    flex: 0 0 100%;
+  }
+}
+
+mat-dialog-content {
+  max-height: 70vh;
+  width: 100%;
+  text-align: center;
+}
+
+/* Center the dialog on the page */
+::ng-deep .mat-mdc-dialog-container {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+::ng-deep .cdk-overlay-pane {
+  margin: auto;
+}
+
+/* Make the title stand out more */
+.dialog-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: center;
+  border-bottom: 2px solid #3f51b5;
+  padding-bottom: 8px;
+}
+
+/* Button styles matching the list view */
+.btn {
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+/* Style for the cancel button */
+.cancel-button {
+  margin-right: 8px;
+}
+
+/* Style for the delete button */
+.delete-button {
+  color: white;
+}
+
+/* Ensure buttons have proper spacing */
+mat-dialog-actions {
+  margin-top: 16px;
+  padding: 8px 0;
+}

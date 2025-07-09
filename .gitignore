@@ -1,0 +1,45 @@
+# Global
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Node.js / Angular (dans frontend/)
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.angular-cache/
+frontend/.output/
+frontend/.cache/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/package-lock.json
+
+# IntelliJ / VS Code / IDE
+.idea/
+.vscode/
+*.iml
+
+# Quarkus / Java (dans backend/)
+backend/target/
+backend/.quarkus/
+backend/.gradle/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/hs_err_pid*
+backend/logs/
+backend/.env
+
+# OS Files
+ehthumbs.db
+Desktop.ini
+
+# Mac
+.AppleDouble
+.LSOverride
+Icon?

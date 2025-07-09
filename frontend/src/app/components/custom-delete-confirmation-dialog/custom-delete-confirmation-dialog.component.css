@@ -1,0 +1,35 @@
+.property-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.property-card {
+  flex: 0 0 calc(50% - 8px);
+  min-width: 250px;
+}
+
+@media (max-width: 768px) {
+  .property-card {
+    flex: 0 0 100%;
+  }
+}
+
+/* Button styles matching the list view */
+.btn {
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+/* Style for the cancel button */
+.cancel-button {
+  margin-right: 8px;
+}
+
+/* Style for the delete button */
+.delete-button {
+  color: white;
+}

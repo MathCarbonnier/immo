@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.stupzz.immo</groupId>
+    <artifactId>immo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>immo-frontend</artifactId>
+  <name>Immo Frontend</name>
+
+  <properties>
+    <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
+    <node.version>22.13.0</node.version>
+    <npm.version>11.4.2</npm.version>
+    <frontend.output.directory>${project.build.directory}/classes/META-INF/resources</frontend.output.directory>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <configuration>
+          <nodeVersion>v${node.version}</nodeVersion>
+          <npmVersion>${npm.version}</npmVersion>
+          <workingDirectory>${project.basedir}</workingDirectory>
+          <installDirectory>${project.build.directory}</installDirectory>
+        </configuration>
+        <executions>
+          <!-- Install Node and NPM -->
+          <execution>
+            <id>install-node-npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+          
+          <!-- Install npm dependencies -->
+          <execution>
+            <id>npm-install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          
+          <!-- Build Angular app -->
+          <execution>
+            <id>npm-build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+          
+          <!-- Run tests -->
+          <execution>
+            <id>npm-test</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <arguments>run test -- --watch=false --browsers=ChromeHeadless</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- Copy built frontend to target directory -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${frontend.output.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/dist/immo-frontend</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- Clean plugin configuration -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/dist</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>${project.basedir}/node_modules</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

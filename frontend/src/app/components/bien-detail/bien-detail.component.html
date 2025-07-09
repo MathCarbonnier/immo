@@ -1,0 +1,96 @@
+<div class="container">
+  <!-- Back button -->
+  <div class="row mb-4">
+    <div class="col">
+      <button class="btn btn-outline-primary" (click)="goBack()">
+        <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="row">
+    <div class="col text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Chargement des détails...</p>
+    </div>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="row">
+    <div class="col">
+      <div class="alert alert-danger">
+        Une erreur est survenue lors du chargement des détails du bien.
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadBien()">Réessayer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Property details -->
+  <div *ngIf="!loading && !error && bien" class="row">
+    <!-- Facade Images Carousel -->
+    <div class="col-md-6 mb-4">
+      <div class="property-image-container position-relative">
+        <img [src]="getFacadeImageSrc()" 
+             class="img-fluid rounded" 
+             alt="{{ bien.titre }}" 
+             style="width: 100%; height: 400px; object-fit: cover;"
+             (click)="nextFacadeImage()">
+
+        <!-- Carousel indicators -->
+        <div *ngIf="facadeImages.length > 1" class="carousel-indicators position-absolute bottom-0 start-50 translate-middle-x mb-2">
+          <button *ngFor="let img of facadeImages; let i = index" 
+                  type="button" 
+                  [class.active]="i === currentFacadeImageIndex"
+                  class="bg-white"
+                  style="width: 10px; height: 10px; border-radius: 50%;"
+                  (click)="$event.stopPropagation(); currentFacadeImageIndex = i"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h1 class="mb-3">{{ bien.titre }}</h1>
+
+      <div class="d-flex justify-content-between mb-4">
+        <div class="property-info">
+          <span class="badge bg-primary fs-5">{{ bien.surface }} m²</span>
+        </div>
+        <div class="property-price">
+          <span class="fs-3 fw-bold">{{ bien.prix | currency:'EUR' }}</span>
+        </div>
+      </div>
+
+      <div class="property-description mb-4">
+        <h4>Description</h4>
+        <p *ngIf="bien.description">{{ bien.description }}</p>
+        <p *ngIf="!bien.description" class="text-muted">Aucune description disponible</p>
+      </div>
+    </div>
+
+    <!-- Other Images Section -->
+    <div *ngIf="otherImages.length > 0" class="col-12 mt-4">
+      <h4 class="mb-3">Autres images</h4>
+
+      <div class="row">
+        <div *ngFor="let img of otherImages; let i = index" 
+             class="col-12 mb-4"
+             [ngClass]="{'bg-white': i % 2 === 0, 'bg-dark text-white': i % 2 === 1}">
+          <div class="d-flex align-items-center p-3" 
+               [ngClass]="{'flex-row': i % 2 === 0, 'flex-row-reverse': i % 2 === 1}">
+            <img [src]="getOtherImageSrc(i)" 
+                 class="img-fluid rounded" 
+                 alt="Image supplémentaire" 
+                 style="width: 400px; height: 400px; object-fit: cover;">
+            <div class="p-4" [ngClass]="{'text-start': i % 2 === 0, 'text-end': i % 2 === 1}">
+              <h5>Image {{ i + 1 }}</h5>
+              <p>Vue supplémentaire du bien</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
