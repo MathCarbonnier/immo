@@ -12,6 +12,7 @@ import { BienListComponent } from './components/bien-list/bien-list.component';
 import { BienDetailComponent } from './components/bien-detail/bien-detail.component';
 import { BienFormComponent } from './components/bien-form/bien-form.component';
 import { DeleteConfirmationDialogComponent } from './components/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
 import { ApiUrlInterceptor } from './interceptors/api-url.interceptor';
 import {MatDialogActions, MatDialogContent, MatDialogTitle, MatDialogModule} from "@angular/material/dialog";
 
@@ -22,7 +23,8 @@ import {MatDialogActions, MatDialogContent, MatDialogTitle, MatDialogModule} fro
     BienListComponent,
     BienDetailComponent,
     BienFormComponent,
-    DeleteConfirmationDialogComponent
+    DeleteConfirmationDialogComponent,
+    CarouselComponent
   ],
   imports: [
     BrowserModule,

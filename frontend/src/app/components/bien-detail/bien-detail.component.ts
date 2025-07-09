@@ -14,9 +14,8 @@ export class BienDetailComponent implements OnInit {
   loading = true;
   error = false;
 
-  facadeImages: ImageBien[] = [];
+  facadeImages: string[] = [];
   otherImages: ImageBien[] = [];
-  currentFacadeImageIndex: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,23 +55,13 @@ export class BienDetailComponent implements OnInit {
 
   filterImages(): void {
     if (this.bien?.images && this.bien.images.length > 0) {
-      this.facadeImages = this.bien.images.filter(img => img.type === 'FACADE');
+      this.facadeImages = this.bien.images
+        .filter(img => img.type === 'FACADE')
+        .map(img => img.base64);
       this.otherImages = this.bien.images.filter(img => img.type === 'AUTRE');
     }
   }
 
-  getFacadeImageSrc(): string {
-    if (this.facadeImages.length > 0) {
-      return getImageSrcFromBase64(
-        this.facadeImages[this.currentFacadeImageIndex].base64,
-        'https://via.placeholder.com/800x600?text=Pas+d%27image+de+façade'
-      );
-    }
-    return getImageSrcFromBase64(
-      null,
-      'https://via.placeholder.com/800x600?text=Pas+d%27image+de+façade'
-    );
-  }
 
   getOtherImageSrc(index: number): string {
     if (index < this.otherImages.length) {
@@ -84,11 +73,6 @@ export class BienDetailComponent implements OnInit {
     return getImageSrcFromBase64(null);
   }
 
-  nextFacadeImage(): void {
-    if (this.facadeImages.length > 1) {
-      this.currentFacadeImageIndex = (this.currentFacadeImageIndex + 1) % this.facadeImages.length;
-    }
-  }
 
   goBack(): void {
     this.router.navigate(['/biens']);

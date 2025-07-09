@@ -1,0 +1,25 @@
+<div class="carousel-container position-relative">
+  <img [src]="getImageSrc()" 
+       class="img-fluid rounded carousel-image" 
+       alt="Image" 
+       style="width: 100%; height: 400px; object-fit: cover;">
+
+  <!-- Navigation Arrows -->
+  <div *ngIf="images.length > 1" class="carousel-navigation">
+    <button class="carousel-arrow carousel-arrow-left" (click)="prevImage()">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <button class="carousel-arrow carousel-arrow-right" (click)="nextImage()">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Carousel indicators -->
+  <div *ngIf="images.length > 1" class="carousel-bullets position-absolute bottom-0 start-50 translate-middle-x mb-3">
+    <button *ngFor="let img of images; let i = index" 
+            type="button" 
+            [class.active]="i === currentImageIndex"
+            class="carousel-bullet"
+            (click)="goToImage(i)"></button>
+  </div>
+</div>

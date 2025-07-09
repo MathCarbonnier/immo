@@ -10,3 +10,19 @@
 .border-primary {
   border-width: 2px !important;
 }
+
+.card-carousel-container {
+  height: 180px;
+  overflow: hidden;
+}
+
+.card-carousel ::ng-deep .carousel-container {
+  max-height: 180px;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.card-carousel ::ng-deep .carousel-image {
+  height: 180px;
+  object-fit: cover;
+}

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
-import { getImageSrcFromBase64 } from '../../utils/image.utils';
 
 @Component({
   selector: 'app-bien-card',
@@ -14,8 +13,7 @@ export class BienCardComponent implements OnInit {
   @Input() selected: boolean = false;
   @Output() toggleSelect = new EventEmitter<number>();
 
-  facadeImages: ImageBien[] = [];
-  currentImageIndex: number = 0;
+  facadeImages: string[] = [];
 
   constructor(private router: Router) {}
 
@@ -25,7 +23,9 @@ export class BienCardComponent implements OnInit {
 
   filterFacadeImages(): void {
     if (this.bien.images && this.bien.images.length > 0) {
-      this.facadeImages = this.bien.images.filter(img => img.type === 'FACADE');
+      this.facadeImages = this.bien.images
+        .filter(img => img.type === 'FACADE')
+        .map(img => img.base64);
     }
   }
 
@@ -37,23 +37,4 @@ export class BienCardComponent implements OnInit {
     }
   }
 
-  onImageClick(event: Event): void {
-    if (this.facadeImages.length > 1) {
-      event.stopPropagation();
-      this.nextImage();
-    }
-  }
-
-  nextImage(): void {
-    if (this.facadeImages.length > 1) {
-      this.currentImageIndex = (this.currentImageIndex + 1) % this.facadeImages.length;
-    }
-  }
-
-  getImageSrc(): string {
-    if (this.facadeImages.length > 0) {
-      return getImageSrcFromBase64(this.facadeImages[this.currentImageIndex].base64);
-    }
-    return getImageSrcFromBase64(null);
-  }
 }

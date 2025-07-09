@@ -1,15 +1,3 @@
-.property-image-container {
-  max-height: 400px;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.property-image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .property-price {
   color: #2c3e50;
