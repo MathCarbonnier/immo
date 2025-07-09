@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Bien } from '../../models/bien.model';
 import { BienService } from '../../services/bien.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { DeleteConfirmationDialogComponent } from '../../components/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
   selector: 'app-bien-list',

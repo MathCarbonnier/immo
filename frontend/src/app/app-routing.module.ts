@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BienListComponent } from './components/bien-list/bien-list.component';
-import { BienDetailComponent } from './components/bien-detail/bien-detail.component';
-import { BienFormComponent } from './components/bien-form/bien-form.component';
+import { BienListComponent } from './containers/bien-list/bien-list.component';
+import { BienDetailComponent } from './containers/bien-detail/bien-detail.component';
+import { BienFormComponent } from './containers/bien-form/bien-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'biens', pathMatch: 'full' },
