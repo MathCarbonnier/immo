@@ -1,24 +1,49 @@
-.card {
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-width: 500px;
+:host {
+  --card-bg: #1a1d24;
+  --card-hover-bg: #22252d;
+  --text-light: #ffffff;
+  --text-muted: #a0a0a0;
+  --primary-gradient: linear-gradient(to right, #ff5f6d, #ffc371);
+  --border-radius: 12px;
+  --transition-speed: 0.3s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.property-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
 }
 
-.border-primary {
-  border-width: 2px !important;
+.property-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-.card-carousel-container {
+.property-card.selected {
+  box-shadow: 0 0 0 3px #ff5f6d, 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-image-container {
+  position: relative;
   height: 300px;
   overflow: hidden;
 }
 
+.carousel-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+/* Custom styling for the carousel inside the card */
 .card-carousel ::ng-deep .carousel-container {
-  max-height: 300px;
+  height: 300px;
   box-shadow: none;
   border-radius: 0;
 }
@@ -26,4 +51,134 @@
 .card-carousel ::ng-deep .carousel-image {
   height: 300px;
   object-fit: cover;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* Selection indicator styling */
+.selection-indicator {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.checkbox-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.custom-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.custom-checkbox:checked ~ .checkmark {
+  background: var(--primary-gradient);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox:checked ~ .checkmark:after {
+  display: block;
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Card content styling */
+.card-content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin: 0 0 15px 0;
+}
+
+.property-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.property-area {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin: 0;
+}
+
+.property-price {
+  color: var(--text-light);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .property-card {
+    max-width: 100%;
+  }
+
+  .card-image-container {
+    height: 250px;
+  }
+
+  .card-carousel ::ng-deep .carousel-container,
+  .card-carousel ::ng-deep .carousel-image {
+    height: 250px;
+  }
+
+  .property-title {
+    font-size: 18px;
+  }
+
+  .property-area,
+  .property-price {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-image-container {
+    height: 200px;
+  }
+
+  .card-carousel ::ng-deep .carousel-container,
+  .card-carousel ::ng-deep .carousel-image {
+    height: 200px;
+  }
+
+  .card-content {
+    padding: 15px;
+  }
 }

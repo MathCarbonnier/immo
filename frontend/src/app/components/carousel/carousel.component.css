@@ -1,15 +1,21 @@
+:host {
+  --primary-gradient: linear-gradient(to right, #ff5f6d, #ffc371);
+  --animation-duration: 400ms;
+  --border-radius: 12px;
+}
+
 .carousel-container {
-  max-height: 400px;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius);
 }
 
 .carousel-images-container {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 100%;
   overflow: hidden;
   pointer-events: none;
 }
@@ -20,7 +26,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transition: transform 400ms ease-in-out;
+  transition: transform var(--animation-duration) ease-in-out;
   pointer-events: none;
 }
 
@@ -39,25 +45,25 @@
 .slide-left-enter {
   z-index: 2;
   transform: translateX(100%);
-  animation: slideLeftEnter 400ms ease-in-out forwards;
+  animation: slideLeftEnter var(--animation-duration) ease-in-out forwards;
 }
 
 .slide-left-leave {
   z-index: 1;
   transform: translateX(0);
-  animation: slideLeftLeave 400ms ease-in-out forwards;
+  animation: slideLeftLeave var(--animation-duration) ease-in-out forwards;
 }
 
 .slide-right-enter {
   z-index: 2;
   transform: translateX(-100%);
-  animation: slideRightEnter 400ms ease-in-out forwards;
+  animation: slideRightEnter var(--animation-duration) ease-in-out forwards;
 }
 
 .slide-right-leave {
   z-index: 1;
   transform: translateX(0);
-  animation: slideRightLeave 400ms ease-in-out forwards;
+  animation: slideRightLeave var(--animation-duration) ease-in-out forwards;
 }
 
 @keyframes slideLeftEnter {
@@ -102,7 +108,7 @@
 }
 
 .carousel-arrow {
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -114,13 +120,13 @@
   margin: 0 15px;
   pointer-events: auto;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .carousel-arrow:hover {
-  background-color: rgba(0, 0, 0, 0.7);
+  background: var(--primary-gradient);
   transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
 }
 
 .carousel-arrow i {
@@ -130,6 +136,10 @@
 
 /* Carousel Bullets */
 .carousel-bullets {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   gap: 8px;
@@ -155,16 +165,68 @@
 }
 
 .carousel-bullet.active {
+  background: var(--primary-gradient);
   width: 14px;
   height: 14px;
-  background-color: white;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 8px rgba(255, 95, 109, 0.6);
   margin-top: -2px;
   margin-bottom: -2px;
-  vertical-align: middle;
 }
 
 .carousel-bullet:hover:not(.active) {
   background-color: rgba(255, 255, 255, 0.8);
   transform: scale(1.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+    margin: 0 10px;
+  }
+
+  .carousel-arrow i {
+    font-size: 1.2rem;
+  }
+
+  .carousel-bullets {
+    padding: 6px 10px;
+  }
+
+  .carousel-bullet {
+    width: 8px;
+    height: 8px;
+  }
+
+  .carousel-bullet.active {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-arrow {
+    width: 32px;
+    height: 32px;
+    margin: 0 8px;
+  }
+
+  .carousel-arrow i {
+    font-size: 1rem;
+  }
+
+  .carousel-bullets {
+    padding: 4px 8px;
+  }
+
+  .carousel-bullet {
+    width: 6px;
+    height: 6px;
+  }
+
+  .carousel-bullet.active {
+    width: 10px;
+    height: 10px;
+  }
 }

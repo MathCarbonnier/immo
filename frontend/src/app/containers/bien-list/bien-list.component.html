@@ -1,53 +1,53 @@
 <div class="bien-list-container">
-  <div class="header-section mb-4">
-    <h1>Liste des biens immobiliers</h1>
+  <div class="header-section">
+    <h1 class="page-title">Property Listings</h1>
   </div>
 
   <!-- Action buttons -->
-  <div class="action-buttons mb-4">
-    <div class="d-flex gap-2">
+  <div class="action-buttons">
+    <div class="button-group">
       <button class="btn btn-primary" (click)="navigateToNew()">
-        <i class="bi bi-plus-circle me-1"></i> Ajouter un bien
+        <i class="bi bi-plus-circle"></i> Add Listing
       </button>
 
       <button class="btn" 
-              [class.btn-outline-danger]="!deleteMode" 
-              [class.btn-danger]="deleteMode" 
+              [class.btn-outline]="!deleteMode" 
+              [class.btn-active]="deleteMode" 
               (click)="toggleDeleteMode()">
         <i class="bi" [class.bi-trash]="!deleteMode" [class.bi-x-circle]="deleteMode"></i>
-        {{ deleteMode ? 'Annuler' : 'Mode suppression' }}
+        {{ deleteMode ? 'Cancel' : 'Deletion Mode' }}
       </button>
 
       <button *ngIf="deleteMode" 
               class="btn btn-danger" 
               [disabled]="selectedBiens.length === 0"
               (click)="deleteSelected()">
-        <i class="bi bi-trash me-1"></i> Supprimer la sélection ({{ selectedBiens.length }})
+        <i class="bi bi-trash"></i> Delete Selected ({{ selectedBiens.length }})
       </button>
     </div>
   </div>
 
   <!-- Loading indicator -->
-  <div *ngIf="loading" class="loading-container text-center py-5">
-    <div class="spinner-border text-primary" role="status">
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <p class="mt-2">Chargement des biens...</p>
+    <p class="loading-text">Loading properties...</p>
   </div>
 
   <!-- Error message -->
   <div *ngIf="error" class="error-container">
-    <div class="alert alert-danger">
-      Une erreur est survenue lors du chargement des biens.
-      <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadBiens()">Réessayer</button>
+    <div class="error-message">
+      An error occurred while loading properties.
+      <button class="btn btn-outline" (click)="loadBiens()">Retry</button>
     </div>
   </div>
 
   <!-- Empty state -->
-  <div *ngIf="!loading && !error && biens.length === 0" class="empty-state text-center py-5">
-    <i class="bi bi-house-x display-1 text-muted"></i>
-    <p class="mt-3 text-muted">Aucun bien immobilier disponible</p>
-    <button class="btn btn-primary mt-2" (click)="navigateToNew()">Ajouter un bien</button>
+  <div *ngIf="!loading && !error && biens.length === 0" class="empty-state">
+    <i class="bi bi-house-x empty-icon"></i>
+    <p class="empty-text">No properties available</p>
+    <button class="btn btn-primary" (click)="navigateToNew()">Add Listing</button>
   </div>
 
   <!-- Property grid -->

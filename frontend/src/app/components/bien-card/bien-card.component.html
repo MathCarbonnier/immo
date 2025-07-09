@@ -1,33 +1,33 @@
-<div class="card mb-3" 
-     [class.border-primary]="selected" 
-     (click)="onCardClick()" 
-     style="cursor: pointer;">
-  <div class="position-relative">
-    <div class="card-carousel-container" (click)="$event.stopPropagation()">
+<div class="property-card" 
+     [class.selected]="selected" 
+     (click)="onCardClick()">
+  <div class="card-image-container">
+    <div class="carousel-wrapper" (click)="$event.stopPropagation()">
       <app-carousel 
         [images]="facadeImages" 
-        [fallbackImageUrl]="'https://via.placeholder.com/800x600?text=Pas+d%27image'"
+        [fallbackImageUrl]="'https://via.placeholder.com/800x600?text=No+Image+Available'"
         class="card-carousel"
         (imageClick)="onCarouselImageClick()">
       </app-carousel>
     </div>
 
-    <!-- Checkbox for selection mode -->
-    <div *ngIf="selectable" class="position-absolute top-0 end-0 m-2">
-      <div class="form-check">
-        <input class="form-check-input" 
+    <!-- Selection indicator -->
+    <div *ngIf="selectable" class="selection-indicator">
+      <div class="checkbox-container">
+        <input class="custom-checkbox" 
                type="checkbox" 
                [checked]="selected" 
                (click)="$event.stopPropagation()">
+        <span class="checkmark"></span>
       </div>
     </div>
   </div>
 
-  <div class="card-body">
-    <h5 class="card-title">{{ bien.titre }}</h5>
-    <div class="d-flex justify-content-between">
-      <p class="card-text"><small>{{ bien.surface }} m²</small></p>
-      <p class="card-text"><strong>{{ bien.prix | currency:'EUR' }}</strong></p>
+  <div class="card-content">
+    <h3 class="property-title">{{ bien.titre }}</h3>
+    <div class="property-details">
+      <p class="property-area">{{ bien.surface }} m²</p>
+      <p class="property-price">{{ bien.prix | currency:'EUR' }}</p>
     </div>
   </div>
 </div>

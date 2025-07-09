@@ -1,4 +1,4 @@
-<div class="carousel-container position-relative">
+<div class="carousel-container">
   <div class="carousel-images-container">
     <!-- Current Image -->
     <div class="carousel-image-wrapper"
@@ -9,8 +9,8 @@
          }"
          (click)="onImageClick()">
       <img [src]="getImageSrc(isAnimating ? previousImageIndex : currentImageIndex)" 
-           class="img-fluid rounded carousel-image" 
-           alt="Image">
+           class="carousel-image" 
+           alt="Property Image">
     </div>
 
     <!-- Next Image (only shown during animation) -->
@@ -20,8 +20,8 @@
            'slide-right-enter': direction === 'right'
          }">
       <img [src]="getImageSrc(currentImageIndex)" 
-           class="img-fluid rounded carousel-image" 
-           alt="Image">
+           class="carousel-image" 
+           alt="Property Image">
     </div>
   </div>
 
@@ -36,7 +36,7 @@
   </div>
 
   <!-- Carousel indicators -->
-  <div *ngIf="images.length > 1" class="carousel-bullets position-absolute bottom-0 start-50 translate-middle-x mb-3">
+  <div *ngIf="images.length > 1" class="carousel-bullets">
     <button *ngFor="let img of images; let i = index" 
             type="button" 
             [class.active]="i === currentImageIndex"
