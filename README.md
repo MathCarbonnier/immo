@@ -6,7 +6,6 @@ This is a monorepo project for a real estate application with a Quarkus backend 
 
 - `backend/`: Quarkus backend application
 - `frontend/`: Angular frontend application
-- `mysql-flyway/`: MySQL with Flyway for database migrations
 
 ## Running the Application with Docker
 
