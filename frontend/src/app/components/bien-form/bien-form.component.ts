@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
 import { BienService } from '../../services/bien.service';
@@ -36,11 +36,28 @@ export class BienFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Component initialization logic
+    // Initialize with one image field for facade
+    this.addImageForm('FACADE');
   }
 
   // Convenience getter for easy access to form fields
   get f() { return this.bienForm.controls; }
+
+  // Add a new image form group
+  addImageForm(type: 'FACADE' | 'AUTRE' = 'FACADE'): void {
+    this.images.push(
+      this.formBuilder.group({
+        base64: ['', Validators.required],
+        type: [type, Validators.required]
+      })
+    );
+  }
+
+  // Remove an image form group
+  removeImageForm(index: number): void {
+    this.images.removeAt(index);
+    this.imagePreviews.splice(index, 1);
+  }
 
   onSubmit(): void {
     this.submitted = true;
@@ -57,7 +74,7 @@ export class BienFormComponent implements OnInit {
       surface: this.f['surface'].value,
       prix: this.f['prix'].value,
       description: this.f['description'].value,
-      image: this.imagePreview // Use the base64 image string
+      images: this.imagePreviews
     };
 
     this.bienService.createBien(newBien).subscribe({
@@ -72,7 +89,7 @@ export class BienFormComponent implements OnInit {
     });
   }
 
-  onFileChange(event: Event): void {
+  onFileChange(event: Event, index: number, type: 'FACADE' | 'AUTRE'): void {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length) {
@@ -98,9 +115,24 @@ export class BienFormComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         const base64String = reader.result as string;
-        this.imagePreview = base64String;
 
-        console.log('Image loaded successfully, length:', base64String.length);
+        // Extract the base64 part (after the comma)
+        const commaIndex = base64String.indexOf(',');
+        const base64Data = commaIndex !== -1 ? base64String.substring(commaIndex + 1) : base64String;
+
+        // Update the form control
+        const imageFormGroup = this.images.at(index) as FormGroup;
+        imageFormGroup.get('base64')?.setValue(base64Data);
+        imageFormGroup.get('type')?.setValue(type);
+
+        // Update the preview
+        if (index < this.imagePreviews.length) {
+          this.imagePreviews[index] = { base64: base64String, type };
+        } else {
+          this.imagePreviews.push({ base64: base64String, type });
+        }
+
+        console.log('Image loaded successfully, length:', base64Data.length);
       };
       reader.onerror = (error) => {
         console.error('Error reading file:', error);
@@ -112,5 +144,27 @@ export class BienFormComponent implements OnInit {
 
   cancelForm(): void {
     this.router.navigate(['/biens']);
+  }
+
+  // Handle type change event with proper typing
+  onTypeChange(event: Event, imageGroup: AbstractControl): void {
+    const target = event.target as HTMLSelectElement;
+    if (target && target.value) {
+      imageGroup.get('type')?.setValue(target.value);
+    }
+  }
+
+  // Safely get the type value from a form control
+  getTypeValue(imageGroup: AbstractControl): 'FACADE' | 'AUTRE' {
+    const typeValue = imageGroup.get('type')?.value;
+    return typeValue === 'AUTRE' ? 'AUTRE' : 'FACADE'; // Default to 'FACADE' if not set or invalid
+  }
+
+  // Safely get a form control from an abstract control
+  getFormControl(control: AbstractControl, name: string): FormControl {
+    const formControl = control.get(name);
+    // If the control doesn't exist, return a new FormControl with a default value
+    // This should never happen in practice, but it satisfies TypeScript
+    return formControl as FormControl;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Bien } from '../models/bien.model';
+import { Bien, ImageBien } from '../models/bien.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,17 +29,29 @@ export class BienService {
    * Create a new property
    */
   createBien(bien: Bien): Observable<Bien> {
-    // Process the image if it exists
-    let imageToSend = bien.image;
+    // Process images if they exist
+    let imagesToSend: ImageBien[] = [];
 
-    // If the image is a data URL, extract just the base64 part
-    if (imageToSend && imageToSend.startsWith('data:')) {
-      // Extract the base64 part (after the comma)
-      const commaIndex = imageToSend.indexOf(',');
-      if (commaIndex !== -1) {
-        imageToSend = imageToSend.substring(commaIndex + 1);
-        console.log('Extracted base64 data from data URL');
-      }
+    if (bien.images && bien.images.length > 0) {
+      imagesToSend = bien.images.map(img => {
+        let base64Value = img.base64;
+
+        // If the image is a data URL, extract just the base64 part
+        if (base64Value && base64Value.startsWith('data:')) {
+          // Extract the base64 part (after the comma)
+          const commaIndex = base64Value.indexOf(',');
+          if (commaIndex !== -1) {
+            base64Value = base64Value.substring(commaIndex + 1);
+          }
+        }
+
+        return {
+          base64: base64Value,
+          type: img.type
+        };
+      });
+
+      console.log(`Processed ${imagesToSend.length} images for sending`);
     }
 
     // Create a clean copy of the bien object to avoid any potential issues
@@ -48,7 +60,7 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
-      image: imageToSend
+      images: imagesToSend
     };
 
     console.log('Sending bien object:', {
@@ -56,7 +68,7 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
-      imageLength: cleanBien.image ? cleanBien.image.length : 0
+      imagesCount: cleanBien.images.length
     });
 
     const headers = new HttpHeaders({
@@ -72,17 +84,29 @@ export class BienService {
    * Update an existing property
    */
   updateBien(id: number, bien: Bien): Observable<Bien> {
-    // Process the image if it exists
-    let imageToSend = bien.image;
+    // Process images if they exist
+    let imagesToSend: ImageBien[] = [];
 
-    // If the image is a data URL, extract just the base64 part
-    if (imageToSend && imageToSend.startsWith('data:')) {
-      // Extract the base64 part (after the comma)
-      const commaIndex = imageToSend.indexOf(',');
-      if (commaIndex !== -1) {
-        imageToSend = imageToSend.substring(commaIndex + 1);
-        console.log('Extracted base64 data from data URL for update');
-      }
+    if (bien.images && bien.images.length > 0) {
+      imagesToSend = bien.images.map(img => {
+        let base64Value = img.base64;
+
+        // If the image is a data URL, extract just the base64 part
+        if (base64Value && base64Value.startsWith('data:')) {
+          // Extract the base64 part (after the comma)
+          const commaIndex = base64Value.indexOf(',');
+          if (commaIndex !== -1) {
+            base64Value = base64Value.substring(commaIndex + 1);
+          }
+        }
+
+        return {
+          base64: base64Value,
+          type: img.type
+        };
+      });
+
+      console.log(`Processed ${imagesToSend.length} images for update`);
     }
 
     // Create a clean copy of the bien object to avoid any potential issues
@@ -91,7 +115,7 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
-      image: imageToSend
+      images: imagesToSend
     };
 
     console.log('Sending bien object for update:', {
@@ -99,7 +123,7 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
-      imageLength: cleanBien.image ? cleanBien.image.length : 0
+      imagesCount: cleanBien.images.length
     });
 
     const headers = new HttpHeaders({

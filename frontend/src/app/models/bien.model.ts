@@ -2,7 +2,7 @@
  * Model representing an image for a real estate property.
  */
 export interface ImageBien {
-  url: string;
+  base64: string;
   type: 'FACADE' | 'AUTRE';
 }
 

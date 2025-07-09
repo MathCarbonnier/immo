@@ -1,5 +1,6 @@
 package com.stupzz.immo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,8 +23,8 @@ public class ImageBien {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String url;
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    private String base64;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -31,6 +32,7 @@ public class ImageBien {
 
     @ManyToOne
     @JoinColumn(name = "bien_id", nullable = false)
+    @JsonIgnore
     private Bien bien;
 
     // Default constructor required by JPA
@@ -38,8 +40,8 @@ public class ImageBien {
     }
 
     // Constructor with all fields
-    public ImageBien(String url, ImageType type, Bien bien) {
-        this.url = url;
+    public ImageBien(String base64, ImageType type, Bien bien) {
+        this.base64 = base64;
         this.type = type;
         this.bien = bien;
     }
@@ -53,12 +55,12 @@ public class ImageBien {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getBase64() {
+        return base64;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setBase64(String base64) {
+        this.base64 = base64;
     }
 
     public ImageType getType() {

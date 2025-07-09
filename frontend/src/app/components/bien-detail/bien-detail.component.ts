@@ -64,7 +64,7 @@ export class BienDetailComponent implements OnInit {
   getFacadeImageSrc(): string {
     if (this.facadeImages.length > 0) {
       return getImageSrcFromBase64(
-        this.facadeImages[this.currentFacadeImageIndex].url,
+        this.facadeImages[this.currentFacadeImageIndex].base64,
         'https://via.placeholder.com/800x600?text=Pas+d%27image+de+façade'
       );
     }
@@ -77,7 +77,7 @@ export class BienDetailComponent implements OnInit {
   getOtherImageSrc(index: number): string {
     if (index < this.otherImages.length) {
       return getImageSrcFromBase64(
-        this.otherImages[index].url,
+        this.otherImages[index].base64,
         'https://via.placeholder.com/400x400?text=Pas+d%27image'
       );
     }

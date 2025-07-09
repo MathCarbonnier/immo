@@ -51,6 +51,12 @@ public class BienService {
      */
     @Transactional
     public Bien create(Bien bien) {
+        // Ensure each ImageBien has its bien property set
+        if (bien.getImages() != null) {
+            for (ImageBien image : bien.getImages()) {
+                image.setBien(bien);
+            }
+        }
         bienRepository.persist(bien);
         return bien;
     }

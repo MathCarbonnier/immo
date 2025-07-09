@@ -52,7 +52,7 @@ export class BienCardComponent implements OnInit {
 
   getImageSrc(): string {
     if (this.facadeImages.length > 0) {
-      return getImageSrcFromBase64(this.facadeImages[this.currentImageIndex].url);
+      return getImageSrcFromBase64(this.facadeImages[this.currentImageIndex].base64);
     }
     return getImageSrcFromBase64(null);
   }
