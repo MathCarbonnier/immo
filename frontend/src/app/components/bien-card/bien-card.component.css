@@ -1,5 +1,6 @@
 .card {
   transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 500px;
 }
 
 .card:hover {
@@ -12,17 +13,17 @@
 }
 
 .card-carousel-container {
-  height: 180px;
+  height: 300px;
   overflow: hidden;
 }
 
 .card-carousel ::ng-deep .carousel-container {
-  max-height: 180px;
+  max-height: 300px;
   box-shadow: none;
   border-radius: 0;
 }
 
 .card-carousel ::ng-deep .carousel-image {
-  height: 180px;
+  height: 300px;
   object-fit: cover;
 }

@@ -9,3 +9,46 @@
 .gap-2 {
   gap: 0.5rem;
 }
+
+/* Flex container for the entire component */
+.bien-list-container {
+  width: 100%;
+  padding: 0 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Flex layout for property cards */
+.property-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+/* Make sure app-bien-card takes appropriate space */
+.property-grid app-bien-card {
+  flex: 0 0 auto;
+  min-width: 300px;
+  /* This will allow cards to grow and fill available space */
+  flex-grow: 1;
+  /* Maximum width to ensure we don't get too few cards on larger screens */
+  max-width: 500px;
+}
+
+/* Styles for loading, error, and empty state containers */
+.loading-container,
+.error-container,
+.empty-state {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .property-grid app-bien-card {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
