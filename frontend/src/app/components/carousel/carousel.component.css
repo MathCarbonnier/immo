@@ -6,11 +6,78 @@
   position: relative;
 }
 
+.carousel-images-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.carousel-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 400ms ease-in-out;
+  pointer-events: none;
+}
+
+.carousel-image-wrapper.active {
+  z-index: 1;
+}
+
 .carousel-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.4s ease-in-out;
+  pointer-events: auto;
+}
+
+/* Animation classes */
+.slide-left-enter {
+  z-index: 2;
+  transform: translateX(100%);
+  animation: slideLeftEnter 400ms ease-in-out forwards;
+}
+
+.slide-left-leave {
+  z-index: 1;
+  transform: translateX(0);
+  animation: slideLeftLeave 400ms ease-in-out forwards;
+}
+
+.slide-right-enter {
+  z-index: 2;
+  transform: translateX(-100%);
+  animation: slideRightEnter 400ms ease-in-out forwards;
+}
+
+.slide-right-leave {
+  z-index: 1;
+  transform: translateX(0);
+  animation: slideRightLeave 400ms ease-in-out forwards;
+}
+
+@keyframes slideLeftEnter {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideLeftLeave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes slideRightEnter {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideRightLeave {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
 }
 
 /* Carousel Navigation Arrows */
@@ -26,14 +93,16 @@
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 10;
 }
 
-.carousel-container:hover .carousel-navigation {
+.carousel-container:hover .carousel-navigation,
+.carousel-container:hover .carousel-bullets {
   opacity: 1;
 }
 
 .carousel-arrow {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -49,14 +118,14 @@
 }
 
 .carousel-arrow:hover {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 0, 0, 0.7);
   transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .carousel-arrow i {
   font-size: 1.5rem;
-  color: #333;
+  color: white;
 }
 
 /* Carousel Bullets */
@@ -64,6 +133,13 @@
   display: flex;
   justify-content: center;
   gap: 8px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px 12px;
+  border-radius: 20px;
 }
 
 .carousel-bullet {
@@ -75,6 +151,7 @@
   padding: 0;
   cursor: pointer;
   transition: all 0.3s ease;
+  pointer-events: auto;
 }
 
 .carousel-bullet.active {
@@ -82,6 +159,9 @@
   height: 14px;
   background-color: white;
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  margin-top: -2px;
+  margin-bottom: -2px;
+  vertical-align: middle;
 }
 
 .carousel-bullet:hover:not(.active) {

@@ -1,8 +1,29 @@
 <div class="carousel-container position-relative">
-  <img [src]="getImageSrc()" 
-       class="img-fluid rounded carousel-image" 
-       alt="Image" 
-       style="width: 100%; height: 400px; object-fit: cover;">
+  <div class="carousel-images-container">
+    <!-- Current Image -->
+    <div class="carousel-image-wrapper"
+         [ngClass]="{
+           'slide-left-leave': isAnimating && direction === 'left',
+           'slide-right-leave': isAnimating && direction === 'right',
+           'active': !isAnimating
+         }"
+         (click)="onImageClick()">
+      <img [src]="getImageSrc(isAnimating ? previousImageIndex : currentImageIndex)" 
+           class="img-fluid rounded carousel-image" 
+           alt="Image">
+    </div>
+
+    <!-- Next Image (only shown during animation) -->
+    <div *ngIf="isAnimating" class="carousel-image-wrapper"
+         [ngClass]="{
+           'slide-left-enter': direction === 'left',
+           'slide-right-enter': direction === 'right'
+         }">
+      <img [src]="getImageSrc(currentImageIndex)" 
+           class="img-fluid rounded carousel-image" 
+           alt="Image">
+    </div>
+  </div>
 
   <!-- Navigation Arrows -->
   <div *ngIf="images.length > 1" class="carousel-navigation">
