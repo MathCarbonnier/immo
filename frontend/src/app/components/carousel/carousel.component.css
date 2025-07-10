@@ -1,8 +1,3 @@
-:host {
-  --primary-gradient: linear-gradient(to right, #ff5f6d, #ffc371);
-  --animation-duration: 400ms;
-  --border-radius: 12px;
-}
 
 .carousel-container {
   position: relative;
