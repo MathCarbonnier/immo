@@ -72,10 +72,13 @@ export class BienListComponent implements OnInit {
     }
   }
 
-  toggleSelectBien(id: number): void {
-    const index = this.selectedBiens.indexOf(id);
+  toggleSelectBien(id: any): void {
+    // Ensure id is treated as a number
+    const numericId = Number(id);
+    
+    const index = this.selectedBiens.indexOf(numericId);
     if (index === -1) {
-      this.selectedBiens.push(id);
+      this.selectedBiens.push(numericId);
     } else {
       this.selectedBiens.splice(index, 1);
     }

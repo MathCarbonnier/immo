@@ -1,124 +1,108 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import * as L from 'leaflet';
-
-// Fix for marker icon issues in Angular
-const iconRetinaUrl = 'assets/marker-icon-2x.png';
-const iconUrl = 'assets/marker-icon.png';
-const shadowUrl = 'assets/marker-shadow.png';
-const iconDefault = L.icon({
-  iconRetinaUrl,
-  iconUrl,
-  shadowUrl,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41]
-});
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ViewChild } from '@angular/core';
+import { GoogleMap, MapMarker } from '@angular/google-maps';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, AfterViewInit, OnChanges {
+export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() latitude: number | null = null;
   @Input() longitude: number | null = null;
   @Output() positionChanged = new EventEmitter<{ latitude: number, longitude: number }>();
+  @ViewChild(GoogleMap) googleMap!: GoogleMap;
 
-  private map: L.Map | null = null;
-  private marker: L.Marker | null = null;
+  // Google Maps options
+  mapOptions: google.maps.MapOptions = {};
+  center: google.maps.LatLngLiteral = { lat: 48.856614, lng: 2.3522219 }; // Paris, France
+  zoom = 13;
+  markerOptions: google.maps.MarkerOptions = { draggable: true };
+  markerPosition: google.maps.LatLngLiteral = { lat: 48.856614, lng: 2.3522219 };
+
   private defaultLatitude = 48.856614; // Paris, France
   private defaultLongitude = 2.3522219;
+  private mapInitialized = false;
 
   constructor() { }
 
   ngOnInit(): void {
-    // Set default icon for all markers
-    L.Marker.prototype.options.icon = iconDefault;
+    // Initialize map options
+    this.mapOptions = {
+      center: this.center,
+      zoom: this.zoom,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false
+    };
+
+    // Set initial marker position if coordinates are provided
+    this.updateMarkerPosition();
   }
 
   ngAfterViewInit(): void {
-    this.initMap();
+    // Add a small delay before initializing the map to ensure the container is fully rendered
+    setTimeout(() => {
+      this.mapInitialized = true;
+      // Force the map to recalculate its dimensions
+      if (this.googleMap && this.googleMap.googleMap) {
+        google.maps.event.trigger(this.googleMap.googleMap, 'resize');
+      }
+    }, 100);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // If the map is already initialized and latitude/longitude inputs change
-    if (this.map && (changes['latitude'] || changes['longitude'])) {
+    // If latitude/longitude inputs change
+    if (changes['latitude'] || changes['longitude']) {
       this.updateMarkerPosition();
     }
   }
 
-  private initMap(): void {
-    // Create the map
-    this.map = L.map('map').setView(
-      [this.latitude || this.defaultLatitude, this.longitude || this.defaultLongitude], 
-      13
-    );
+  ngOnDestroy(): void {
+    // No specific cleanup needed for Google Maps
+    this.mapInitialized = false;
+  }
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(this.map);
-
-    // Add a marker if coordinates are provided
-    this.updateMarkerPosition();
-
-    // Add click event to the map
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
-      const { lat, lng } = e.latlng;
+  // Handle map click events
+  onMapClick(event: google.maps.MapMouseEvent): void {
+    if (event.latLng) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
       this.updateMarker(lat, lng);
       this.positionChanged.emit({ latitude: lat, longitude: lng });
-    });
+    }
+  }
+
+  // Handle marker drag events
+  onMarkerDragEnd(event: google.maps.MapMouseEvent): void {
+    if (event.latLng) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      this.positionChanged.emit({ latitude: lat, longitude: lng });
+    }
   }
 
   private updateMarkerPosition(): void {
-    if (!this.map) return;
-
     const lat = this.latitude || this.defaultLatitude;
     const lng = this.longitude || this.defaultLongitude;
 
-    if (this.marker) {
-      // Update existing marker position
-      this.marker.setLatLng([lat, lng]);
-    } else {
-      // Create a new marker
-      this.marker = L.marker([lat, lng], {
-        draggable: true
-      }).addTo(this.map);
+    // Update center and marker position
+    this.center = { lat, lng };
+    this.markerPosition = { lat, lng };
 
-      // Add drag event to the marker
-      this.marker.on('dragend', () => {
-        const position = this.marker?.getLatLng();
-        if (position) {
-          this.positionChanged.emit({ latitude: position.lat, longitude: position.lng });
-        }
-      });
+    // If the map is already initialized, update the view
+    if (this.mapInitialized && this.googleMap) {
+      this.googleMap.panTo(this.center);
     }
-
-    // Center the map on the marker
-    this.map.setView([lat, lng], this.map.getZoom());
   }
 
   private updateMarker(lat: number, lng: number): void {
-    if (!this.map) return;
+    this.markerPosition = { lat, lng };
+    this.center = { lat, lng };
 
-    if (this.marker) {
-      // Update existing marker position
-      this.marker.setLatLng([lat, lng]);
-    } else {
-      // Create a new marker
-      this.marker = L.marker([lat, lng], {
-        draggable: true
-      }).addTo(this.map);
-
-      // Add drag event to the marker
-      this.marker.on('dragend', () => {
-        const position = this.marker?.getLatLng();
-        if (position) {
-          this.positionChanged.emit({ latitude: position.lat, longitude: position.lng });
-        }
-      });
+    // If the map is already initialized, update the view
+    if (this.mapInitialized && this.googleMap) {
+      this.googleMap.panTo(this.center);
     }
   }
 }
