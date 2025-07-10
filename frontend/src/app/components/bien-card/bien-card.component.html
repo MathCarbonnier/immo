@@ -24,7 +24,12 @@
   </div>
 
   <div class="card-content">
-    <h3 class="property-title">{{ bien.titre }}</h3>
+    <div class="property-header">
+      <h3 class="property-title">{{ bien.titre }}</h3>
+      <div class="status-badge" [ngClass]="'status-' + bien.status">
+        {{ getBienStatusLabel(bien.status) }}
+      </div>
+    </div>
     <div class="property-details">
       <p class="property-area">{{ bien.surface }} m²</p>
       <p class="property-price">{{ bien.prix | numberWithSpaces }} €</p>

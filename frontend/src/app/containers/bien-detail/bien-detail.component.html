@@ -58,6 +58,10 @@
             <i class="bi bi-tag-fill"></i>
             <span>{{ bien.prix | numberWithSpaces }} €</span>
           </div>
+          <div class="property-status" [ngClass]="getStatusClass(bien.status)">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ getBienStatusLabel(bien.status) }}</span>
+          </div>
         </div>
       </div>
     </section>

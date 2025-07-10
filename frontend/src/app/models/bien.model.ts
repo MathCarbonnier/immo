@@ -1,3 +1,6 @@
+// Import the BienStatus enum from the dedicated file
+import { BienStatus } from './bien-status.enum';
+
 /**
  * Model representing an image for a real estate property.
  */
@@ -16,4 +19,5 @@ export interface Bien {
   prix: number;
   images?: ImageBien[];
   description?: string;
+  status: BienStatus;
 }

@@ -24,11 +24,16 @@ public class BienResource {
     /**
      * Get all Bien entities.
      *
+     * @param sortBy The field to sort by (optional)
+     * @param sortOrder The sort order (asc or desc, optional)
+     * @param status The status to filter by (optional)
      * @return Response with the list of all Bien entities
      */
     @GET
-    public Response getAll() {
-        List<Bien> biens = bienService.findAll();
+    public Response getAll(@QueryParam("sortBy") String sortBy, 
+                          @QueryParam("sortOrder") String sortOrder,
+                          @QueryParam("status") String status) {
+        List<Bien> biens = bienService.findAll(sortBy, sortOrder, status);
         return Response.ok(biens).build();
     }
 

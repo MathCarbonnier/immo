@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
+import { BienStatus, getBienStatusLabel } from '../../models/bien-status.enum';
 
 @Component({
   selector: 'app-bien-card',
@@ -8,6 +9,10 @@ import { Bien, ImageBien } from '../../models/bien.model';
   styleUrls: ['./bien-card.component.css']
 })
 export class BienCardComponent implements OnInit {
+  // Make enum available to the template
+  BienStatus = BienStatus;
+  getBienStatusLabel = getBienStatusLabel;
+
   @Input() bien!: Bien;
   @Input() selectable: boolean = false;
   @Input() selected: boolean = false;

@@ -155,7 +155,7 @@
   margin-bottom: 1.5rem;
 }
 
-.property-surface, .property-price {
+.property-surface, .property-price, .property-status {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -181,6 +181,47 @@
 .property-price span {
   font-size: 1.4rem;
   font-weight: 700;
+}
+
+.property-status {
+  position: relative;
+  overflow: hidden;
+}
+
+.property-status::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  opacity: 0.15;
+  border-radius: 8px;
+  z-index: -1;
+}
+
+.property-status.status-a-vendre {
+  --status-color: var(--status-a-vendre-color);
+}
+
+.property-status.status-en-cours-de-vente {
+  --status-color: var(--status-en-cours-de-vente-color);
+}
+
+.property-status.status-vendu {
+  --status-color: var(--status-vendu-color);
+}
+
+.property-status i {
+  font-size: 1.3rem;
+  color: var(--status-color, var(--primary-color));
+}
+
+.property-status span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-light);
 }
 
 /* Description section */

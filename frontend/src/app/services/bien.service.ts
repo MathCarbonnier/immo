@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bien, ImageBien } from '../models/bien.model';
 
@@ -13,9 +13,26 @@ export class BienService {
 
   /**
    * Get all properties
+   * @param sortBy Optional field to sort by
+   * @param sortOrder Optional sort order ('asc' or 'desc')
+   * @param status Optional status filter
    */
-  getAllBiens(): Observable<Bien[]> {
-    return this.http.get<Bien[]>(this.apiUrl);
+  getAllBiens(sortBy?: string, sortOrder?: string, status?: string): Observable<Bien[]> {
+    let params = new HttpParams();
+
+    if (sortBy) {
+      params = params.set('sortBy', sortBy);
+    }
+
+    if (sortOrder) {
+      params = params.set('sortOrder', sortOrder);
+    }
+
+    if (status) {
+      params = params.set('status', status);
+    }
+
+    return this.http.get<Bien[]>(this.apiUrl, { params });
   }
 
   /**
@@ -60,6 +77,7 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
+      status: bien.status,
       images: imagesToSend
     };
 
@@ -68,6 +86,7 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
+      status: cleanBien.status,
       imagesCount: cleanBien.images.length
     });
 
@@ -115,6 +134,7 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
+      status: bien.status,
       images: imagesToSend
     };
 
@@ -123,6 +143,7 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
+      status: cleanBien.status,
       imagesCount: cleanBien.images.length
     });
 

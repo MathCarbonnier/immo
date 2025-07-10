@@ -25,6 +25,21 @@
         <i class="bi bi-trash"></i> Delete Selected ({{ selectedBiens.length }})
       </button>
     </div>
+
+    <!-- Status filter -->
+    <div class="filter-group">
+      <label for="statusFilter">
+        <i class="bi bi-funnel"></i>
+        Filter by status:
+      </label>
+      <select id="statusFilter" class="form-select status-filter" 
+              [ngModel]="selectedStatus" 
+              (ngModelChange)="onStatusFilterChange($event)">
+        <option *ngFor="let option of statusOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
   </div>
 
   <!-- Loading indicator -->
@@ -50,10 +65,17 @@
     <button class="btn btn-primary" (click)="navigateToNew()">Add Listing</button>
   </div>
 
+  <!-- No results for filter -->
+  <div *ngIf="!loading && !error && biens.length > 0 && filteredBiens.length === 0" class="empty-state">
+    <i class="bi bi-filter-circle-x empty-icon"></i>
+    <p class="empty-text">No properties match the selected filter</p>
+    <button class="btn btn-outline" (click)="onStatusFilterChange(null)">Clear Filter</button>
+  </div>
+
   <!-- Property grid -->
-  <div *ngIf="!loading && !error && biens.length > 0" class="property-grid">
+  <div *ngIf="!loading && !error && filteredBiens.length > 0" class="property-grid">
     <app-bien-card 
-      *ngFor="let bien of biens"
+      *ngFor="let bien of filteredBiens"
       [bien]="bien"
       [selectable]="deleteMode"
       [selected]="isSelected(bien.id!)"

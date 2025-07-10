@@ -31,6 +31,23 @@
           </div>
         </div>
 
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select 
+            class="form-select" 
+            id="status" 
+            formControlName="status" 
+            [ngClass]="{ 'is-invalid': submitted && f['status'].errors }"
+          >
+            <option [value]="BienStatus.A_VENDRE">{{ getBienStatusLabel(BienStatus.A_VENDRE) }}</option>
+            <option [value]="BienStatus.EN_COURS_DE_VENTE">{{ getBienStatusLabel(BienStatus.EN_COURS_DE_VENTE) }}</option>
+            <option [value]="BienStatus.VENDU">{{ getBienStatusLabel(BienStatus.VENDU) }}</option>
+          </select>
+          <div *ngIf="submitted && f['status'].errors" class="invalid-feedback">
+            <div *ngIf="f['status'].errors['required']">Status is required</div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">

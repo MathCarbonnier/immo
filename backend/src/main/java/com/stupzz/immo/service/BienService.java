@@ -3,8 +3,11 @@ package com.stupzz.immo.service;
 import com.stupzz.immo.entity.Bien;
 import com.stupzz.immo.entity.ImageBien;
 import com.stupzz.immo.entity.ImageType;
+import com.stupzz.immo.entity.Status;
 import com.stupzz.immo.repository.BienRepository;
 import com.stupzz.immo.repository.ImageBienRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -23,6 +26,55 @@ public class BienService {
 
     @Inject
     ImageBienRepository imageBienRepository;
+
+    /**
+     * Get all Bien entities.
+     *
+     * @param sortBy The field to sort by (optional)
+     * @param sortOrder The sort order (asc or desc, optional)
+     * @return List of all Bien entities, sorted if parameters are provided
+     */
+    public List<Bien> findAll(String sortBy, String sortOrder) {
+        if (sortBy != null && !sortBy.isEmpty()) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.Descending : Sort.Direction.Ascending;
+            return bienRepository.listAll(Sort.by(sortBy).direction(direction));
+        }
+        return bienRepository.listAll();
+    }
+
+    /**
+     * Get all Bien entities filtered by status.
+     *
+     * @param sortBy The field to sort by (optional)
+     * @param sortOrder The sort order (asc or desc, optional)
+     * @param statusStr The status to filter by (optional)
+     * @return List of Bien entities filtered by status and sorted if parameters are provided
+     */
+    public List<Bien> findAll(String sortBy, String sortOrder, String statusStr) {
+        // If status is not provided, use the regular findAll method
+        if (statusStr == null || statusStr.isEmpty()) {
+            return findAll(sortBy, sortOrder);
+        }
+
+        // Try to parse the status string to a Status enum
+        Status status;
+        try {
+            status = Status.valueOf(statusStr);
+        } catch (IllegalArgumentException e) {
+            // If the status string is invalid, return all biens
+            return findAll(sortBy, sortOrder);
+        }
+
+        // Apply sorting if provided
+        if (sortBy != null && !sortBy.isEmpty()) {
+            Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.Descending : Sort.Direction.Ascending;
+            Sort sort = Sort.by(sortBy).direction(direction);
+            return bienRepository.find("status", sort, status).list();
+        }
+
+        // No sorting, just filter by status
+        return bienRepository.find("status", status).list();
+    }
 
     /**
      * Get all Bien entities.
@@ -76,6 +128,7 @@ public class BienService {
                     existingBien.setSurface(bien.getSurface());
                     existingBien.setPrix(bien.getPrix());
                     existingBien.setDescription(bien.getDescription());
+                    existingBien.setStatus(bien.getStatus());
 
                     // Update images
                     existingBien.getImages().clear();

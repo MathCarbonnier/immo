@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
+import { BienStatus, getBienStatusLabel } from '../../models/bien-status.enum';
 import { BienService } from '../../services/bien.service';
 import { getImageSrcFromBase64 } from '../../utils/image.utils';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -26,6 +27,23 @@ export class BienDetailComponent implements OnInit, AfterViewInit {
   bien: Bien | null = null;
   loading = true;
   error = false;
+
+  // Make the getBienStatusLabel function available in the template
+  getBienStatusLabel = getBienStatusLabel;
+
+  // Get the CSS class for a status
+  getStatusClass(status: BienStatus): string {
+    switch(status) {
+      case BienStatus.A_VENDRE:
+        return 'status-a-vendre';
+      case BienStatus.EN_COURS_DE_VENTE:
+        return 'status-en-cours-de-vente';
+      case BienStatus.VENDU:
+        return 'status-vendu';
+      default:
+        return '';
+    }
+  }
 
   facadeImages: string[] = [];
   otherImages: ImageBien[] = [];

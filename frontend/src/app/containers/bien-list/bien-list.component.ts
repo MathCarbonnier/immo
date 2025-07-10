@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Bien } from '../../models/bien.model';
+import { BienStatus, getBienStatusLabel } from '../../models/bien-status.enum';
 import { BienService } from '../../services/bien.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmationDialogComponent } from '../../components/delete-confirmation-dialog/delete-confirmation-dialog.component';
@@ -12,10 +13,20 @@ import { DeleteConfirmationDialogComponent } from '../../components/delete-confi
 })
 export class BienListComponent implements OnInit {
   biens: Bien[] = [];
+  filteredBiens: Bien[] = [];
   selectedBiens: number[] = [];
   deleteMode = false;
   loading = true;
   error = false;
+
+  // Status filter
+  selectedStatus: BienStatus | null = null;
+  statusOptions: { value: BienStatus | null, label: string }[] = [
+    { value: null, label: 'All Properties' },
+    { value: BienStatus.A_VENDRE, label: getBienStatusLabel(BienStatus.A_VENDRE) },
+    { value: BienStatus.EN_COURS_DE_VENTE, label: getBienStatusLabel(BienStatus.EN_COURS_DE_VENTE) },
+    { value: BienStatus.VENDU, label: getBienStatusLabel(BienStatus.VENDU) }
+  ];
 
   constructor(
     private bienService: BienService,
@@ -31,9 +42,14 @@ export class BienListComponent implements OnInit {
     this.loading = true;
     this.error = false;
 
-    this.bienService.getAllBiens().subscribe({
+    // Get the status filter value
+    const statusFilter = this.selectedStatus ? this.selectedStatus.toString() : undefined;
+
+    // Sort by status by default and apply status filter if selected
+    this.bienService.getAllBiens('status', 'asc', statusFilter).subscribe({
       next: (data) => {
         this.biens = data;
+        this.filteredBiens = [...this.biens]; // No need to filter locally anymore
         this.loading = false;
       },
       error: (err) => {
@@ -42,6 +58,11 @@ export class BienListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onStatusFilterChange(status: BienStatus | null): void {
+    this.selectedStatus = status;
+    this.loadBiens(); // Reload data from backend with the new filter
   }
 
   toggleDeleteMode(): void {

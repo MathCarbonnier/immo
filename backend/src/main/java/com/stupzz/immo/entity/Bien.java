@@ -3,6 +3,8 @@ package com.stupzz.immo.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,12 +48,26 @@ public class Bien {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.A_VENDRE;
+
     // Constructor with all fields except images
     public Bien(String titre, Double surface, Double prix, String description) {
         this.titre = titre;
         this.surface = surface;
         this.prix = prix;
         this.description = description;
+        this.status = Status.A_VENDRE;
+    }
+
+    // Constructor with all fields including status
+    public Bien(String titre, Double surface, Double prix, String description, Status status) {
+        this.titre = titre;
+        this.surface = surface;
+        this.prix = prix;
+        this.description = description;
+        this.status = status;
     }
 
     // Helper method to add an image

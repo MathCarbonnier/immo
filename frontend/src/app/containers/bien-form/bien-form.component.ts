@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
+import { BienStatus, getBienStatusLabel } from '../../models/bien-status.enum';
 import { BienService } from '../../services/bien.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { getImageSrcFromBase64 } from '../../utils/image.utils';
@@ -27,6 +28,10 @@ import { NumberWithSpacesPipe } from '../../shared/pipes/number-with-spaces.pipe
   providers: [NumberWithSpacesPipe]
 })
 export class BienFormComponent implements OnInit {
+  // Make enum available to the template
+  BienStatus = BienStatus;
+  getBienStatusLabel = getBienStatusLabel;
+
   bienForm: FormGroup;
   loading = false;
   submitted = false;
@@ -49,6 +54,7 @@ export class BienFormComponent implements OnInit {
       surface: ['', [Validators.required, Validators.min(1)]],
       prix: ['', [Validators.required, Validators.min(1)]],
       description: [''],
+      status: [BienStatus.A_VENDRE, [Validators.required]],
       images: this.formBuilder.array([])
     });
   }
@@ -78,7 +84,8 @@ export class BienFormComponent implements OnInit {
             titre: bien.titre,
             surface: bien.surface,
             prix: bien.prix, // We'll format this after patchValue
-            description: bien.description || ''
+            description: bien.description || '',
+            status: bien.status
           });
 
           // Format the price with spaces
@@ -165,6 +172,7 @@ export class BienFormComponent implements OnInit {
       surface: this.f['surface'].value,
       prix: this.f['prix'].value,
       description: this.f['description'].value,
+      status: this.f['status'].value,
       images: this.imagePreviews
     };
 

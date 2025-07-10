@@ -8,6 +8,11 @@
   --text-light: #ffffff;
   --text-muted: #a0a0a0;
 
+  /* Status colors */
+  --status-a-vendre-color: #4caf50;      /* Green */
+  --status-en-cours-de-vente-color: #ff9800; /* Orange */
+  --status-vendu-color: #f44336;         /* Red */
+
   /* Component-specific variables that might be useful globally */
   --card-bg: #1a1d24;
   --card-hover-bg: #22252d;
