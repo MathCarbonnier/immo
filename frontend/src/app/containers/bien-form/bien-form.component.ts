@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
@@ -28,7 +28,7 @@ import { AddressInfo } from '../../components/map/map.component';
   ],
   providers: [NumberWithSpacesPipe]
 })
-export class BienFormComponent implements OnInit {
+export class BienFormComponent implements OnInit, OnDestroy {
   // Make enum available to the template
   BienStatus = BienStatus;
   getBienStatusLabel = getBienStatusLabel;
@@ -282,6 +282,13 @@ export class BienFormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    // Clean up the timeout to prevent memory leaks
+    if (this.addressUpdateTimeout) {
+      clearTimeout(this.addressUpdateTimeout);
+    }
+  }
+
   // Handle type change event with proper typing
   onTypeChange(event: Event, imageGroup: AbstractControl): void {
     const target = event.target as HTMLSelectElement;
@@ -304,19 +311,59 @@ export class BienFormComponent implements OnInit {
     return formControl as FormControl;
   }
 
+  // Success message for address update
+  addressUpdateSuccess = '';
+  addressUpdateTimeout: any = null;
+
   // Handle address changes from the map component
   onAddressChanged(addressInfo: AddressInfo): void {
     console.log('Address changed:', addressInfo);
 
-    // Update form values with the address information
-    this.bienForm.patchValue({
-      rue: addressInfo.street,
-      ville: addressInfo.city,
-      codePostal: addressInfo.postalCode,
-      pays: addressInfo.country
-    });
+    // Create an object to hold the fields to update
+    const fieldsToUpdate: { [key: string]: string } = {};
+    const updatedFields: string[] = [];
 
-    // Show a success message to the user
-    this.error = ''; // Clear any previous errors
+    // Only update fields that are empty or haven't been modified by the user
+    if (!this.f['rue'].value || this.f['rue'].pristine) {
+      fieldsToUpdate['rue'] = addressInfo.street;
+      if (addressInfo.street) updatedFields.push('adresse');
+    }
+
+    if (!this.f['ville'].value || this.f['ville'].pristine) {
+      fieldsToUpdate['ville'] = addressInfo.city;
+      if (addressInfo.city) updatedFields.push('ville');
+    }
+
+    if (!this.f['codePostal'].value || this.f['codePostal'].pristine) {
+      fieldsToUpdate['codePostal'] = addressInfo.postalCode;
+      if (addressInfo.postalCode) updatedFields.push('code postal');
+    }
+
+    if (!this.f['pays'].value || this.f['pays'].pristine) {
+      fieldsToUpdate['pays'] = addressInfo.country;
+      if (addressInfo.country) updatedFields.push('pays');
+    }
+
+    // Update form values with the address information (only for fields that should be updated)
+    if (Object.keys(fieldsToUpdate).length > 0) {
+      this.bienForm.patchValue(fieldsToUpdate);
+
+      // Clear any previous errors
+      this.error = '';
+
+      // Show a success message to the user
+      if (updatedFields.length > 0) {
+        this.addressUpdateSuccess = `Champs mis à jour automatiquement: ${updatedFields.join(', ')}`;
+
+        // Clear the success message after 5 seconds
+        if (this.addressUpdateTimeout) {
+          clearTimeout(this.addressUpdateTimeout);
+        }
+
+        this.addressUpdateTimeout = setTimeout(() => {
+          this.addressUpdateSuccess = '';
+        }, 5000);
+      }
+    }
   }
 }
