@@ -1,4 +1,9 @@
 <div class="container mt-4">
+  <div class="back-button-container">
+    <button type="button" class="btn-back" (click)="handleBack()">
+      <i class="bi bi-arrow-left"></i> {{ isEditMode ? 'Retour aux détails' : 'Retour à la liste' }}
+    </button>
+  </div>
   <h1 class="page-title mb-4">{{ pageTitle }}</h1>
 
   <div *ngIf="error" class="alert alert-danger">

@@ -253,6 +253,14 @@ export class BienFormComponent implements OnInit {
     this.router.navigate(['/biens']);
   }
 
+  handleBack(): void {
+    if (this.isEditMode && this.propertyId) {
+      this.router.navigate(['/biens', this.propertyId]);
+    } else {
+      this.router.navigate(['/biens']);
+    }
+  }
+
   // Handle type change event with proper typing
   onTypeChange(event: Event, imageGroup: AbstractControl): void {
     const target = event.target as HTMLSelectElement;
