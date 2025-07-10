@@ -1,6 +1,15 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ViewChild } from '@angular/core';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 
+export interface AddressInfo {
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -10,7 +19,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   @Input() latitude: number | null = null;
   @Input() longitude: number | null = null;
   @Output() positionChanged = new EventEmitter<{ latitude: number, longitude: number }>();
+  @Output() addressChanged = new EventEmitter<AddressInfo>();
   @ViewChild(GoogleMap) googleMap!: GoogleMap;
+
+  geocoder: google.maps.Geocoder;
 
   // Google Maps options
   mapOptions: google.maps.MapOptions = {};
@@ -23,7 +35,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   private defaultLongitude = 2.3522219;
   private mapInitialized = false;
 
-  constructor() { }
+  constructor() {
+    // Initialize the geocoder
+    this.geocoder = new google.maps.Geocoder();
+  }
 
   ngOnInit(): void {
     // Initialize map options
@@ -70,6 +85,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
       const lng = event.latLng.lng();
       this.updateMarker(lat, lng);
       this.positionChanged.emit({ latitude: lat, longitude: lng });
+      this.getAddressFromLatLng(lat, lng);
     }
   }
 
@@ -79,7 +95,75 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
       this.positionChanged.emit({ latitude: lat, longitude: lng });
+      this.getAddressFromLatLng(lat, lng);
     }
+  }
+
+  // Get address information from latitude and longitude using reverse geocoding
+  private getAddressFromLatLng(lat: number, lng: number): void {
+    const latlng = { lat, lng };
+
+    this.geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
+        const addressComponents = this.extractAddressComponents(results[0]);
+
+        const addressInfo: AddressInfo = {
+          street: addressComponents.street || '',
+          city: addressComponents.city || '',
+          postalCode: addressComponents.postalCode || '',
+          country: addressComponents.country || '',
+          latitude: lat,
+          longitude: lng
+        };
+
+        this.addressChanged.emit(addressInfo);
+      } else {
+        console.error('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+
+  // Extract address components from geocoder result
+  private extractAddressComponents(result: google.maps.GeocoderResult): {
+    street: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  } {
+    const components = {
+      street: '',
+      city: '',
+      postalCode: '',
+      country: ''
+    };
+
+    if (result.address_components) {
+      for (const component of result.address_components) {
+        const types = component.types;
+
+        if (types.includes('street_number')) {
+          components.street = component.long_name + ' ' + components.street;
+        }
+
+        if (types.includes('route')) {
+          components.street = components.street + component.long_name;
+        }
+
+        if (types.includes('locality')) {
+          components.city = component.long_name;
+        }
+
+        if (types.includes('postal_code')) {
+          components.postalCode = component.long_name;
+        }
+
+        if (types.includes('country')) {
+          components.country = component.long_name;
+        }
+      }
+    }
+
+    return components;
   }
 
   private updateMarkerPosition(): void {

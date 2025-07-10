@@ -49,13 +49,16 @@ public class Bien {
     private String description;
 
     @Column
-    private Double latitude;
+    private String rue;
 
     @Column
-    private Double longitude;
+    private String ville;
 
     @Column
-    private String adresse;
+    private String codePostal;
+
+    @Column
+    private String pays;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

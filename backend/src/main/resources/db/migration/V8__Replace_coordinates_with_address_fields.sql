@@ -1,0 +1,5 @@
+-- Add structured address fields
+ALTER TABLE bien ADD COLUMN rue VARCHAR(255);
+ALTER TABLE bien ADD COLUMN ville VARCHAR(255);
+ALTER TABLE bien ADD COLUMN code_postal VARCHAR(20);
+ALTER TABLE bien ADD COLUMN pays VARCHAR(100);

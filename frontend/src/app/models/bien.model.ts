@@ -19,8 +19,9 @@ export interface Bien {
   prix: number;
   images?: ImageBien[];
   description?: string;
-  latitude?: number;
-  longitude?: number;
-  adresse?: string;
+  rue?: string;
+  ville?: string;
+  codePostal?: string;
+  pays?: string;
   status: BienStatus;
 }

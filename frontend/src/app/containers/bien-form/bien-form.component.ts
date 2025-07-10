@@ -7,6 +7,7 @@ import { BienService } from '../../services/bien.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { getImageSrcFromBase64 } from '../../utils/image.utils';
 import { NumberWithSpacesPipe } from '../../shared/pipes/number-with-spaces.pipe';
+import { AddressInfo } from '../../components/map/map.component';
 
 @Component({
   selector: 'app-bien-form',
@@ -41,8 +42,6 @@ export class BienFormComponent implements OnInit {
   propertyId: number | null = null;
   pageTitle = 'Ajouter un bien';
   saveButtonText = 'Enregistrer';
-  latitude: number | null = null;
-  longitude: number | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -56,9 +55,10 @@ export class BienFormComponent implements OnInit {
       surface: ['', [Validators.required, Validators.min(1)]],
       prix: ['', [Validators.required, Validators.min(1)]],
       description: [''],
-      latitude: [null],
-      longitude: [null],
-      adresse: [''],
+      rue: [''],
+      ville: [''],
+      codePostal: [''],
+      pays: [''],
       status: [BienStatus.A_VENDRE, [Validators.required]],
       images: this.formBuilder.array([])
     });
@@ -90,15 +90,12 @@ export class BienFormComponent implements OnInit {
             surface: bien.surface,
             prix: bien.prix, // We'll format this after patchValue
             description: bien.description || '',
-            latitude: bien.latitude,
-            longitude: bien.longitude,
-            adresse: bien.adresse || '',
+            rue: bien.rue || '',
+            ville: bien.ville || '',
+            codePostal: bien.codePostal || '',
+            pays: bien.pays || '',
             status: bien.status
           });
-
-          // Update component properties for the map
-          this.latitude = bien.latitude || null;
-          this.longitude = bien.longitude || null;
 
           // Format the price with spaces
           // This needs to be done after patchValue to ensure the directive works correctly
@@ -184,9 +181,10 @@ export class BienFormComponent implements OnInit {
       surface: this.f['surface'].value,
       prix: this.f['prix'].value,
       description: this.f['description'].value,
-      latitude: this.f['latitude'].value,
-      longitude: this.f['longitude'].value,
-      adresse: this.f['adresse'].value,
+      rue: this.f['rue'].value,
+      ville: this.f['ville'].value,
+      codePostal: this.f['codePostal'].value,
+      pays: this.f['pays'].value,
       status: this.f['status'].value,
       images: this.imagePreviews
     };
@@ -306,21 +304,19 @@ export class BienFormComponent implements OnInit {
     return formControl as FormControl;
   }
 
-  // Handle position change from the map component
-  onPositionChanged(position: { latitude: number, longitude: number }): void {
-    this.latitude = position.latitude;
-    this.longitude = position.longitude;
+  // Handle address changes from the map component
+  onAddressChanged(addressInfo: AddressInfo): void {
+    console.log('Address changed:', addressInfo);
 
-    // Update form values
+    // Update form values with the address information
     this.bienForm.patchValue({
-      latitude: position.latitude,
-      longitude: position.longitude
+      rue: addressInfo.street,
+      ville: addressInfo.city,
+      codePostal: addressInfo.postalCode,
+      pays: addressInfo.country
     });
 
-    // TODO: Implement reverse geocoding to get address from coordinates
-    // For now, we'll just set a placeholder
-    this.bienForm.patchValue({
-      adresse: `Lat: ${position.latitude.toFixed(6)}, Lng: ${position.longitude.toFixed(6)}`
-    });
+    // Show a success message to the user
+    this.error = ''; // Clear any previous errors
   }
 }

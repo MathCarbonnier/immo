@@ -21,9 +21,10 @@ public class BienRequestDTO {
     private Double surface;
     private Double prix;
     private String description;
-    private Double latitude;
-    private Double longitude;
-    private String adresse;
+    private String rue;
+    private String ville;
+    private String codePostal;
+    private String pays;
     private Status status;
     private List<ImageBienRequestDTO> images = new ArrayList<>();
 }

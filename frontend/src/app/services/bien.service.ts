@@ -77,6 +77,10 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
+      rue: bien.rue,
+      ville: bien.ville,
+      codePostal: bien.codePostal,
+      pays: bien.pays,
       status: bien.status,
       images: imagesToSend
     };
@@ -86,6 +90,10 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
+      rue: cleanBien.rue,
+      ville: cleanBien.ville,
+      codePostal: cleanBien.codePostal,
+      pays: cleanBien.pays,
       status: cleanBien.status,
       imagesCount: cleanBien.images.length
     });
@@ -134,6 +142,10 @@ export class BienService {
       surface: bien.surface,
       prix: bien.prix,
       description: bien.description,
+      rue: bien.rue,
+      ville: bien.ville,
+      codePostal: bien.codePostal,
+      pays: bien.pays,
       status: bien.status,
       images: imagesToSend
     };
@@ -143,6 +155,10 @@ export class BienService {
       surface: cleanBien.surface,
       prix: cleanBien.prix,
       description: cleanBien.description,
+      rue: cleanBien.rue,
+      ville: cleanBien.ville,
+      codePostal: cleanBien.codePostal,
+      pays: cleanBien.pays,
       status: cleanBien.status,
       imagesCount: cleanBien.images.length
     });
