@@ -3,11 +3,25 @@ import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, FormCon
 import { Router } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
 import { BienService } from '../../services/bien.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-bien-form',
   templateUrl: './bien-form.component.html',
-  styleUrls: ['./bien-form.component.css']
+  styleUrls: ['./bien-form.component.css'],
+  animations: [
+    trigger('imageAnimation', [
+      // Entry animation
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      // Exit animation
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(10px)' }))
+      ])
+    ])
+  ]
 })
 export class BienFormComponent implements OnInit {
   bienForm: FormGroup;

@@ -38,7 +38,9 @@ export class BienCardComponent implements OnInit {
   }
 
   onCarouselImageClick(): void {
-    if (!this.selectable) {
+    if (this.selectable) {
+      this.toggleSelect.emit(this.bien.id);
+    } else {
       this.router.navigate(['/biens', this.bien.id]);
     }
   }

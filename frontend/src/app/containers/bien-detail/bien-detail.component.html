@@ -1,83 +1,115 @@
-<div class="container">
+<div class="property-detail-container">
   <!-- Back button -->
-  <div class="row mb-4">
-    <div class="col">
-      <button class="btn btn-outline-primary" (click)="goBack()">
-        <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+  <div class="back-button-container">
+    <button class="btn-back" (click)="goBack()">
+      <i class="bi bi-arrow-left"></i> 
+      <span>Retour à la liste</span>
+    </button>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <p class="loading-text">Chargement des détails...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="error-container">
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      Une erreur est survenue lors du chargement des détails du bien.
+      <button class="btn-retry" (click)="loadBien()">
+        <i class="bi bi-arrow-clockwise me-1"></i> Réessayer
       </button>
     </div>
   </div>
 
-  <!-- Loading indicator -->
-  <div *ngIf="loading" class="row">
-    <div class="col text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-2">Chargement des détails...</p>
-    </div>
-  </div>
-
-  <!-- Error message -->
-  <div *ngIf="error" class="row">
-    <div class="col">
-      <div class="alert alert-danger">
-        Une erreur est survenue lors du chargement des détails du bien.
-        <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadBien()">Réessayer</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Property details -->
-  <div *ngIf="!loading && !error && bien" class="row">
-    <!-- Facade Images Carousel -->
-    <div class="col-md-6 mb-4">
-      <app-carousel 
-        [images]="facadeImages" 
-        [fallbackImageUrl]="'https://via.placeholder.com/800x600?text=Pas+d%27image+de+façade'">
-      </app-carousel>
-    </div>
-
-    <div class="col-md-6">
-      <h1 class="mb-3">{{ bien.titre }}</h1>
-
-      <div class="d-flex justify-content-between mb-4">
-        <div class="property-info">
-          <span class="badge bg-primary fs-5">{{ bien.surface }} m²</span>
-        </div>
-        <div class="property-price">
-          <span class="fs-3 fw-bold">{{ bien.prix | currency:'EUR' }}</span>
-        </div>
+  <div *ngIf="!loading && !error && bien" class="property-content">
+    <!-- Main section with carousel and info -->
+    <section class="main-section">
+      <!-- Facade Images Carousel -->
+      <div class="carousel-container">
+        <app-carousel 
+          [images]="facadeImages" 
+          [fallbackImageUrl]="'https://via.placeholder.com/800x600?text=Pas+d%27image+de+façade'"
+          (imageClick)="onCarouselImageClick($event)">
+        </app-carousel>
       </div>
 
-      <div class="property-description mb-4">
-        <h4>Description</h4>
+      <!-- Property information -->
+      <div class="property-info-container">
+        <h1 class="property-title">{{ bien.titre }}</h1>
+
+        <div class="property-metrics">
+          <div class="property-surface">
+            <i class="bi bi-rulers"></i>
+            <span>{{ bien.surface }} m²</span>
+          </div>
+          <div class="property-price">
+            <i class="bi bi-tag-fill"></i>
+            <span>{{ bien.prix | currency:'EUR' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Description section -->
+    <section class="description-section">
+      <h2 class="section-title">
+        <i class="bi bi-file-text me-2"></i>Description
+      </h2>
+      <div class="description-content">
         <p *ngIf="bien.description">{{ bien.description }}</p>
         <p *ngIf="!bien.description" class="text-muted">Aucune description disponible</p>
       </div>
-    </div>
+    </section>
 
     <!-- Other Images Section -->
-    <div *ngIf="otherImages.length > 0" class="col-12 mt-4">
-      <h4 class="mb-3">Autres images</h4>
+    <section *ngIf="otherImages.length > 0" class="other-images-section">
+      <h2 class="section-title">
+        <i class="bi bi-images me-2"></i>Galerie d'images
+      </h2>
 
-      <div class="row">
+      <div class="images-grid">
         <div *ngFor="let img of otherImages; let i = index" 
-             class="col-12 mb-4"
-             [ngClass]="{'bg-white': i % 2 === 0, 'bg-dark text-white': i % 2 === 1}">
-          <div class="d-flex align-items-center p-3" 
-               [ngClass]="{'flex-row': i % 2 === 0, 'flex-row-reverse': i % 2 === 1}">
-            <img [src]="getOtherImageSrc(i)" 
-                 class="img-fluid rounded" 
-                 alt="Image supplémentaire" 
-                 style="width: 400px; height: 400px; object-fit: cover;">
-            <div class="p-4" [ngClass]="{'text-start': i % 2 === 0, 'text-end': i % 2 === 1}">
-              <h5>Image {{ i + 1 }}</h5>
-              <p>Vue supplémentaire du bien</p>
+             class="image-item"
+             [ngClass]="{'even': i % 2 === 0, 'odd': i % 2 === 1}">
+          <div class="image-content" [ngClass]="{'reverse': i % 2 === 1}">
+            <div class="image-container">
+              <img [src]="getOtherImageSrc(i)" 
+                   class="property-image" 
+                   alt="Image supplémentaire">
+            </div>
+            <div class="image-info">
+              <h3>Vue {{ i + 1 }}</h3>
+              <p>Détail supplémentaire du bien</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+  </div>
+</div>
+
+<!-- Fullscreen Carousel Overlay -->
+<div *ngIf="isFullscreen" 
+     class="fullscreen-backdrop"
+     (click)="onFullscreenBackdropClick($event)"
+     [@fullscreenAnimation]>
+  <div class="fullscreen-carousel-container" (click)="onFullscreenCarouselClick($event)">
+    <button class="fullscreen-close-btn" (click)="closeFullscreen()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <app-carousel 
+      [images]="facadeImages" 
+      [fallbackImageUrl]="'https://via.placeholder.com/1200x900?text=Pas+d%27image+de+façade'"
+      class="fullscreen-carousel"
+      #fullscreenCarousel>
+    </app-carousel>
   </div>
 </div>
