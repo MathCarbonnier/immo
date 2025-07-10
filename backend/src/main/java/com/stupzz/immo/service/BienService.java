@@ -1,9 +1,12 @@
 package com.stupzz.immo.service;
 
+import com.stupzz.immo.dto.BienRequestDTO;
+import com.stupzz.immo.dto.BienResponseDTO;
 import com.stupzz.immo.entity.Bien;
 import com.stupzz.immo.entity.ImageBien;
 import com.stupzz.immo.entity.ImageType;
 import com.stupzz.immo.entity.Status;
+import com.stupzz.immo.mapper.BienMapper;
 import com.stupzz.immo.repository.BienRepository;
 import com.stupzz.immo.repository.ImageBienRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -27,30 +30,36 @@ public class BienService {
     @Inject
     ImageBienRepository imageBienRepository;
 
+    @Inject
+    BienMapper bienMapper;
+
     /**
-     * Get all Bien entities.
+     * Get all Bien entities as DTOs.
      *
      * @param sortBy The field to sort by (optional)
      * @param sortOrder The sort order (asc or desc, optional)
-     * @return List of all Bien entities, sorted if parameters are provided
+     * @return List of all Bien DTOs, sorted if parameters are provided
      */
-    public List<Bien> findAll(String sortBy, String sortOrder) {
+    public List<BienResponseDTO> findAll(String sortBy, String sortOrder) {
+        List<Bien> biens;
         if (sortBy != null && !sortBy.isEmpty()) {
             Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.Descending : Sort.Direction.Ascending;
-            return bienRepository.listAll(Sort.by(sortBy).direction(direction));
+            biens = bienRepository.listAll(Sort.by(sortBy).direction(direction));
+        } else {
+            biens = bienRepository.listAll();
         }
-        return bienRepository.listAll();
+        return bienMapper.toResponseDTOs(biens);
     }
 
     /**
-     * Get all Bien entities filtered by status.
+     * Get all Bien entities filtered by status as DTOs.
      *
      * @param sortBy The field to sort by (optional)
      * @param sortOrder The sort order (asc or desc, optional)
      * @param statusStr The status to filter by (optional)
-     * @return List of Bien entities filtered by status and sorted if parameters are provided
+     * @return List of Bien DTOs filtered by status and sorted if parameters are provided
      */
-    public List<Bien> findAll(String sortBy, String sortOrder, String statusStr) {
+    public List<BienResponseDTO> findAll(String sortBy, String sortOrder, String statusStr) {
         // If status is not provided, use the regular findAll method
         if (statusStr == null || statusStr.isEmpty()) {
             return findAll(sortBy, sortOrder);
@@ -65,80 +74,86 @@ public class BienService {
             return findAll(sortBy, sortOrder);
         }
 
+        List<Bien> biens;
         // Apply sorting if provided
         if (sortBy != null && !sortBy.isEmpty()) {
             Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.Descending : Sort.Direction.Ascending;
             Sort sort = Sort.by(sortBy).direction(direction);
-            return bienRepository.find("status", sort, status).list();
+            biens = bienRepository.find("status", sort, status).list();
+        } else {
+            // No sorting, just filter by status
+            biens = bienRepository.find("status", status).list();
         }
 
-        // No sorting, just filter by status
-        return bienRepository.find("status", status).list();
+        return bienMapper.toResponseDTOs(biens);
     }
 
     /**
-     * Get all Bien entities.
+     * Get all Bien entities as DTOs.
      *
-     * @return List of all Bien entities
+     * @return List of all Bien DTOs
      */
-    public List<Bien> findAll() {
-        return bienRepository.listAll();
+    public List<BienResponseDTO> findAll() {
+        List<Bien> biens = bienRepository.listAll();
+        return bienMapper.toResponseDTOs(biens);
     }
 
     /**
-     * Get a Bien entity by its ID.
+     * Get a Bien entity by its ID as DTO.
      *
      * @param id The ID of the Bien entity
-     * @return Optional containing the Bien entity if found, empty otherwise
+     * @return Optional containing the Bien DTO if found, empty otherwise
      */
-    public Optional<Bien> findById(Long id) {
-        return Optional.ofNullable(bienRepository.findById(id));
+    public Optional<BienResponseDTO> findById(Long id) {
+        return Optional.ofNullable(bienRepository.findById(id))
+                .map(bienMapper::toResponseDTO);
     }
 
     /**
-     * Create a new Bien entity.
+     * Create a new Bien entity from DTO.
      *
-     * @param bien The Bien entity to create
-     * @return The created Bien entity
+     * @param bienDTO The Bien DTO to create
+     * @return The created Bien DTO
      */
     @Transactional
-    public Bien create(Bien bien) {
+    public BienResponseDTO create(BienRequestDTO bienDTO) {
+        Bien bien = bienMapper.toEntity(bienDTO);
+
         // Ensure each ImageBien has its bien property set
         if (bien.getImages() != null) {
             for (ImageBien image : bien.getImages()) {
                 image.setBien(bien);
             }
         }
+
         bienRepository.persist(bien);
-        return bien;
+        return bienMapper.toResponseDTO(bien);
     }
 
     /**
-     * Update an existing Bien entity.
+     * Update an existing Bien entity from DTO.
      *
      * @param id The ID of the Bien entity to update
-     * @param bien The updated Bien entity
-     * @return Optional containing the updated Bien entity if found, empty otherwise
+     * @param bienDTO The updated Bien DTO
+     * @return Optional containing the updated Bien DTO if found, empty otherwise
      */
     @Transactional
-    public Optional<Bien> update(Long id, Bien bien) {
-        return findById(id)
-                .map(existingBien -> {
-                    existingBien.setTitre(bien.getTitre());
-                    existingBien.setSurface(bien.getSurface());
-                    existingBien.setPrix(bien.getPrix());
-                    existingBien.setDescription(bien.getDescription());
-                    existingBien.setStatus(bien.getStatus());
+    public Optional<BienResponseDTO> update(Long id, BienRequestDTO bienDTO) {
+        Bien existingBien = bienRepository.findById(id);
+        if (existingBien == null) {
+            return Optional.empty();
+        }
 
-                    // Update images
-                    existingBien.getImages().clear();
-                    if (bien.getImages() != null) {
-                        for (ImageBien image : bien.getImages()) {
-                            existingBien.addImage(image);
-                        }
-                    }
-                    return existingBien;
-                });
+        bienMapper.updateEntityFromDTO(existingBien, bienDTO);
+
+        // Ensure each ImageBien has its bien property set
+        if (existingBien.getImages() != null) {
+            for (ImageBien image : existingBien.getImages()) {
+                image.setBien(existingBien);
+            }
+        }
+
+        return Optional.of(bienMapper.toResponseDTO(existingBien));
     }
 
     /**

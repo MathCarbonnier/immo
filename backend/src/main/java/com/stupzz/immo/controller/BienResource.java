@@ -1,6 +1,7 @@
 package com.stupzz.immo.controller;
 
-import com.stupzz.immo.entity.Bien;
+import com.stupzz.immo.dto.BienRequestDTO;
+import com.stupzz.immo.dto.BienResponseDTO;
 import com.stupzz.immo.service.BienService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -11,7 +12,8 @@ import jakarta.ws.rs.core.UriBuilder;
 import java.util.List;
 
 /**
- * REST Controller for Bien entities.
+ * REST Controller for Bien resources.
+ * Uses DTOs for data transfer between client and server.
  */
 @Path("/api/biens")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,26 +24,26 @@ public class BienResource {
     BienService bienService;
 
     /**
-     * Get all Bien entities.
+     * Get all Bien DTOs.
      *
      * @param sortBy The field to sort by (optional)
      * @param sortOrder The sort order (asc or desc, optional)
      * @param status The status to filter by (optional)
-     * @return Response with the list of all Bien entities
+     * @return Response with the list of all Bien DTOs
      */
     @GET
     public Response getAll(@QueryParam("sortBy") String sortBy, 
                           @QueryParam("sortOrder") String sortOrder,
                           @QueryParam("status") String status) {
-        List<Bien> biens = bienService.findAll(sortBy, sortOrder, status);
+        List<BienResponseDTO> biens = bienService.findAll(sortBy, sortOrder, status);
         return Response.ok(biens).build();
     }
 
     /**
-     * Get a Bien entity by its ID.
+     * Get a Bien DTO by its ID.
      *
-     * @param id The ID of the Bien entity
-     * @return Response with the Bien entity if found, 404 otherwise
+     * @param id The ID of the Bien
+     * @return Response with the Bien DTO if found, 404 otherwise
      */
     @GET
     @Path("/{id}")
@@ -52,15 +54,15 @@ public class BienResource {
     }
 
     /**
-     * Create a new Bien entity.
+     * Create a new Bien from DTO.
      *
-     * @param bien The Bien entity to create
-     * @return Response with the created Bien entity and 201 status
+     * @param bienDTO The Bien DTO to create
+     * @return Response with the created Bien DTO and 201 status
      */
     @Consumes(MediaType.APPLICATION_JSON)
     @POST
-    public Response create(Bien bien) {
-        Bien created = bienService.create(bien);
+    public Response create(BienRequestDTO bienDTO) {
+        BienResponseDTO created = bienService.create(bienDTO);
         return Response
                 .created(UriBuilder.fromResource(BienResource.class)
                         .path(String.valueOf(created.getId()))
@@ -70,16 +72,16 @@ public class BienResource {
     }
 
     /**
-     * Update an existing Bien entity.
+     * Update an existing Bien from DTO.
      *
-     * @param id The ID of the Bien entity to update
-     * @param bien The updated Bien entity
-     * @return Response with the updated Bien entity if found, 404 otherwise
+     * @param id The ID of the Bien to update
+     * @param bienDTO The updated Bien DTO
+     * @return Response with the updated Bien DTO if found, 404 otherwise
      */
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") Long id, Bien bien) {
-        return bienService.update(id, bien)
+    public Response update(@PathParam("id") Long id, BienRequestDTO bienDTO) {
+        return bienService.update(id, bienDTO)
                 .map(updated -> Response.ok(updated).build())
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
