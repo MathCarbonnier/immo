@@ -41,6 +41,8 @@ export class BienFormComponent implements OnInit {
   propertyId: number | null = null;
   pageTitle = 'Ajouter un bien';
   saveButtonText = 'Enregistrer';
+  latitude: number | null = null;
+  longitude: number | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -54,6 +56,9 @@ export class BienFormComponent implements OnInit {
       surface: ['', [Validators.required, Validators.min(1)]],
       prix: ['', [Validators.required, Validators.min(1)]],
       description: [''],
+      latitude: [null],
+      longitude: [null],
+      adresse: [''],
       status: [BienStatus.A_VENDRE, [Validators.required]],
       images: this.formBuilder.array([])
     });
@@ -85,8 +90,15 @@ export class BienFormComponent implements OnInit {
             surface: bien.surface,
             prix: bien.prix, // We'll format this after patchValue
             description: bien.description || '',
+            latitude: bien.latitude,
+            longitude: bien.longitude,
+            adresse: bien.adresse || '',
             status: bien.status
           });
+
+          // Update component properties for the map
+          this.latitude = bien.latitude || null;
+          this.longitude = bien.longitude || null;
 
           // Format the price with spaces
           // This needs to be done after patchValue to ensure the directive works correctly
@@ -172,6 +184,9 @@ export class BienFormComponent implements OnInit {
       surface: this.f['surface'].value,
       prix: this.f['prix'].value,
       description: this.f['description'].value,
+      latitude: this.f['latitude'].value,
+      longitude: this.f['longitude'].value,
+      adresse: this.f['adresse'].value,
       status: this.f['status'].value,
       images: this.imagePreviews
     };
@@ -289,5 +304,23 @@ export class BienFormComponent implements OnInit {
     // If the control doesn't exist, return a new FormControl with a default value
     // This should never happen in practice, but it satisfies TypeScript
     return formControl as FormControl;
+  }
+
+  // Handle position change from the map component
+  onPositionChanged(position: { latitude: number, longitude: number }): void {
+    this.latitude = position.latitude;
+    this.longitude = position.longitude;
+
+    // Update form values
+    this.bienForm.patchValue({
+      latitude: position.latitude,
+      longitude: position.longitude
+    });
+
+    // TODO: Implement reverse geocoding to get address from coordinates
+    // For now, we'll just set a placeholder
+    this.bienForm.patchValue({
+      adresse: `Lat: ${position.latitude.toFixed(6)}, Lng: ${position.longitude.toFixed(6)}`
+    });
   }
 }

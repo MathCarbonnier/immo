@@ -13,6 +13,7 @@ import { BienDetailComponent } from './containers/bien-detail/bien-detail.compon
 import { BienFormComponent } from './containers/bien-form/bien-form.component';
 import { DeleteConfirmationDialogComponent } from './components/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
+import { MapComponent } from './components/map/map.component';
 import { ApiUrlInterceptor } from './interceptors/api-url.interceptor';
 import {MatDialogActions, MatDialogContent, MatDialogTitle, MatDialogModule} from "@angular/material/dialog";
 import { SharedModule } from './shared/shared.module';
@@ -25,7 +26,8 @@ import { SharedModule } from './shared/shared.module';
     BienDetailComponent,
     BienFormComponent,
     DeleteConfirmationDialogComponent,
-    CarouselComponent
+    CarouselComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,

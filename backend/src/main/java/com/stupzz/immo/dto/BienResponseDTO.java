@@ -22,6 +22,9 @@ public class BienResponseDTO {
     private Double surface;
     private Double prix;
     private String description;
+    private Double latitude;
+    private Double longitude;
+    private String adresse;
     private Status status;
     private List<ImageBienResponseDTO> images = new ArrayList<>();
 }

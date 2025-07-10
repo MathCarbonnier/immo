@@ -35,14 +35,17 @@ public class BienMapper {
         dto.setSurface(bien.getSurface());
         dto.setPrix(bien.getPrix());
         dto.setDescription(bien.getDescription());
+        dto.setLatitude(bien.getLatitude());
+        dto.setLongitude(bien.getLongitude());
+        dto.setAdresse(bien.getAdresse());
         dto.setStatus(bien.getStatus());
-        
+
         if (bien.getImages() != null) {
             dto.setImages(bien.getImages().stream()
                     .map(imageBienMapper::toResponseDTO)
                     .collect(Collectors.toList()));
         }
-        
+
         return dto;
     }
 
@@ -56,7 +59,7 @@ public class BienMapper {
         if (biens == null) {
             return List.of();
         }
-        
+
         return biens.stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -93,8 +96,11 @@ public class BienMapper {
         bien.setSurface(dto.getSurface());
         bien.setPrix(dto.getPrix());
         bien.setDescription(dto.getDescription());
+        bien.setLatitude(dto.getLatitude());
+        bien.setLongitude(dto.getLongitude());
+        bien.setAdresse(dto.getAdresse());
         bien.setStatus(dto.getStatus());
-        
+
         // Clear existing images and add new ones
         bien.getImages().clear();
         if (dto.getImages() != null) {

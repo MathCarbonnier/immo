@@ -48,6 +48,15 @@ public class Bien {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
+    @Column
+    private String adresse;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.A_VENDRE;
