@@ -1,18 +1,19 @@
-/* Variables */
+/* Variables - harmonized with global theme */
 :host {
-  --primary-color: #4a6bff;
-  --primary-hover: #3a5bef;
-  --secondary-color: #505a64;
-  --secondary-hover: #3e464e;
-  --danger-color: #ff5a5a;
-  --danger-hover: #e04545;
-  --light-bg: #f8f9fa;
-  --border-color: #e0e0e0;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --text-color: #333;
-  --text-muted: #6c757d;
-  --border-radius: 8px;
-  --transition-speed: 0.3s;
+  /* Using colors from the primary gradient */
+  --primary-color: #ff5f6d; /* From the start of the global primary gradient */
+  --primary-hover: #ffc371; /* From the end of the global primary gradient */
+  --secondary-color: #1a1d24; /* Matching card-bg */
+  --secondary-hover: #22252d; /* Matching card-hover-bg */
+  --danger-color: #ff5a5a; /* Keeping the same danger color */
+  --danger-hover: #e04545; /* Keeping the same danger hover */
+  --light-bg: #22252d; /* Slightly lighter than card-bg for contrast */
+  --border-color: #333; /* Darker border for dark theme */
+  --shadow-color: rgba(0, 0, 0, 0.3); /* Darker shadow for dark theme */
+  --text-color: var(--text-light); /* Using global text-light variable */
+  --text-muted: var(--text-muted); /* Using global text-muted variable */
+  --border-radius: var(--border-radius); /* Using global border-radius */
+  --transition-speed: var(--transition-speed); /* Using global transition-speed */
 }
 
 /* Form container styling */
@@ -24,14 +25,16 @@
 .page-title {
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--primary-color);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
 /* Property form styling */
 .property-form {
-  background-color: white;
+  background-color: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: 0 4px 20px var(--shadow-color);
   padding: 2rem;
@@ -52,7 +55,7 @@
 .section-title {
   font-size: 1.4rem;
   font-weight: 600;
-  color: var(--secondary-color);
+  color: var(--text-light);
   margin-bottom: 1.2rem;
   display: flex;
   align-items: center;
@@ -83,11 +86,13 @@ label:not([for="titre"]):not([for="surface"]):not([for="prix"])::after {
   border-radius: var(--border-radius);
   padding: 0.6rem 1rem;
   transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  background-color: var(--secondary-hover);
+  color: var(--text-light);
 }
 
 .form-control:focus, .form-select:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(74, 107, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(255, 95, 109, 0.25);
 }
 
 .input-group-text {
@@ -111,11 +116,13 @@ label:not([for="titre"]):not([for="surface"]):not([for="prix"])::after {
   overflow: hidden;
   box-shadow: 0 2px 8px var(--shadow-color);
   transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  background-color: var(--secondary-color);
 }
 
 .image-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px var(--shadow-color);
+  background-color: var(--secondary-hover);
 }
 
 .image-header {
@@ -229,15 +236,14 @@ label:not([for="titre"]):not([for="surface"]):not([for="prix"])::after {
 }
 
 .btn-add-facade {
-  background-color: var(--primary-color);
+  background: var(--primary-gradient);
   color: white;
-  box-shadow: 0 4px 10px rgba(74, 107, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(255, 95, 109, 0.3);
 }
 
 .btn-add-facade:hover {
-  background-color: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(74, 107, 255, 0.4);
+  box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
 }
 
 .btn-add-other {
@@ -275,25 +281,24 @@ label:not([for="titre"]):not([for="surface"]):not([for="prix"])::after {
 }
 
 .btn-cancel {
-  background-color: #f0f0f0;
+  background-color: var(--secondary-color);
   color: var(--text-muted);
 }
 
 .btn-cancel:hover {
-  background-color: #e0e0e0;
+  background-color: var(--secondary-hover);
   transform: translateY(-2px);
 }
 
 .btn-save {
-  background-color: var(--primary-color);
+  background: var(--primary-gradient);
   color: white;
-  box-shadow: 0 4px 10px rgba(74, 107, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(255, 95, 109, 0.3);
 }
 
 .btn-save:hover {
-  background-color: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(74, 107, 255, 0.4);
+  box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
 }
 
 .btn-save:disabled {

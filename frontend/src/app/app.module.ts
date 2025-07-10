@@ -15,6 +15,7 @@ import { DeleteConfirmationDialogComponent } from './components/delete-confirmat
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { ApiUrlInterceptor } from './interceptors/api-url.interceptor';
 import {MatDialogActions, MatDialogContent, MatDialogTitle, MatDialogModule} from "@angular/material/dialog";
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {MatDialogActions, MatDialogContent, MatDialogTitle, MatDialogModule} fro
     MatDialogModule,
     MatDialogContent,
     MatDialogActions,
-    MatDialogTitle
+    MatDialogTitle,
+    SharedModule
   ],
   providers: [
     {

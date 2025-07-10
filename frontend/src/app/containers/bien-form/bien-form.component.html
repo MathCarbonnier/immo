@@ -51,10 +51,11 @@
               <label for="prix" class="form-label">Price (€)</label>
               <div class="input-group">
                 <input 
-                  type="number" 
+                  type="text" 
                   class="form-control" 
                   id="prix" 
                   formControlName="prix" 
+                  appNumberWithSpaces
                   [ngClass]="{ 'is-invalid': submitted && f['prix'].errors }"
                 >
                 <span class="input-group-text">€</span>
