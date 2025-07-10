@@ -100,6 +100,12 @@ export class BienDetailComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/biens']);
   }
 
+  editBien(): void {
+    if (this.bien && this.bien.id) {
+      this.router.navigate(['/biens', this.bien.id, 'edit']);
+    }
+  }
+
   onCarouselImageClick(index: number): void {
     this.currentFullscreenIndex = index;
     this.isFullscreen = true;

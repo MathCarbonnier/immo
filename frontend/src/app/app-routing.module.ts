@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'biens', pathMatch: 'full' },
   { path: 'biens', component: BienListComponent },
   { path: 'biens/new', component: BienFormComponent },
+  { path: 'biens/:id/edit', component: BienFormComponent },
   { path: 'biens/:id', component: BienDetailComponent },
   { path: '**', redirectTo: 'biens' } // Catch-all route for any undefined routes
 ];

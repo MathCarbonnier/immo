@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Bien, ImageBien } from '../../models/bien.model';
 import { BienService } from '../../services/bien.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { getImageSrcFromBase64 } from '../../utils/image.utils';
+import { NumberWithSpacesPipe } from '../../shared/pipes/number-with-spaces.pipe';
 
 @Component({
   selector: 'app-bien-form',
@@ -21,7 +23,8 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
         animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(10px)' }))
       ])
     ])
-  ]
+  ],
+  providers: [NumberWithSpacesPipe]
 })
 export class BienFormComponent implements OnInit {
   bienForm: FormGroup;
@@ -29,11 +32,17 @@ export class BienFormComponent implements OnInit {
   submitted = false;
   error = '';
   imagePreviews: ImageBien[] = [];
+  isEditMode = false;
+  propertyId: number | null = null;
+  pageTitle = 'Ajouter un bien';
+  saveButtonText = 'Enregistrer';
 
   constructor(
     private formBuilder: FormBuilder,
     private bienService: BienService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private numberWithSpacesPipe: NumberWithSpacesPipe
   ) {
     this.bienForm = this.formBuilder.group({
       titre: ['', [Validators.required]],
@@ -50,8 +59,76 @@ export class BienFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initialize with one image field for facade
-    this.addImageForm('FACADE');
+    // Check if we're in edit mode by looking for an ID in the route
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      // We're in edit mode
+      this.isEditMode = true;
+      this.propertyId = Number(id);
+      this.pageTitle = 'Modifier le bien';
+      this.saveButtonText = 'Modifier';
+
+      // Load the property data
+      this.loading = true;
+      this.bienService.getBienById(this.propertyId).subscribe({
+        next: (bien) => {
+          // Populate the form with the property data
+          this.bienForm.patchValue({
+            titre: bien.titre,
+            surface: bien.surface,
+            prix: bien.prix, // We'll format this after patchValue
+            description: bien.description || ''
+          });
+
+          // Format the price with spaces
+          // This needs to be done after patchValue to ensure the directive works correctly
+          setTimeout(() => {
+            const prixControl = this.bienForm.get('prix');
+            if (prixControl && bien.prix) {
+              // First set the raw value to trigger the directive's formatting
+              prixControl.setValue(bien.prix);
+            }
+          }, 0);
+
+          // Clear any default image forms
+          while (this.images.length) {
+            this.images.removeAt(0);
+          }
+
+          // Add image forms for each image
+          if (bien.images && bien.images.length > 0) {
+            bien.images.forEach(img => {
+              this.addImageForm(img.type as 'FACADE' | 'AUTRE');
+              // Add to previews with properly formatted base64 data
+              // We store the original base64 data for form submission
+              // but use the formatted data for display
+              this.imagePreviews.push({
+                base64: getImageSrcFromBase64(img.base64),
+                type: img.type
+              });
+            });
+
+            // Update form values for images
+            for (let i = 0; i < bien.images.length; i++) {
+              const imageGroup = this.images.at(i) as FormGroup;
+              imageGroup.get('base64')?.setValue(bien.images[i].base64);
+              imageGroup.get('type')?.setValue(bien.images[i].type);
+            }
+          }
+
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading property for editing', err);
+          this.error = 'Error loading property: ' + (err.message || err);
+          this.loading = false;
+        }
+      });
+    } else {
+      // We're in create mode, initialize with one image field for facade
+      this.addImageForm('FACADE');
+    }
   }
 
   // Convenience getter for easy access to form fields
@@ -83,7 +160,7 @@ export class BienFormComponent implements OnInit {
 
     this.loading = true;
 
-    const newBien: Bien = {
+    const bienData: Bien = {
       titre: this.f['titre'].value,
       surface: this.f['surface'].value,
       prix: this.f['prix'].value,
@@ -91,16 +168,31 @@ export class BienFormComponent implements OnInit {
       images: this.imagePreviews
     };
 
-    this.bienService.createBien(newBien).subscribe({
-      next: () => {
-        this.router.navigate(['/biens']);
-      },
-      error: error => {
-        console.error('Error details:', error);
-        this.error = 'Error creating property: ' + (error.message || error) + ' - Status: ' + (error.status || 'unknown');
-        this.loading = false;
-      }
-    });
+    // If in edit mode, update the existing property
+    if (this.isEditMode && this.propertyId) {
+      this.bienService.updateBien(this.propertyId, bienData).subscribe({
+        next: () => {
+          this.router.navigate(['/biens', this.propertyId]);
+        },
+        error: error => {
+          console.error('Error details:', error);
+          this.error = 'Error updating property: ' + (error.message || error) + ' - Status: ' + (error.status || 'unknown');
+          this.loading = false;
+        }
+      });
+    } else {
+      // Otherwise, create a new property
+      this.bienService.createBien(bienData).subscribe({
+        next: () => {
+          this.router.navigate(['/biens']);
+        },
+        error: error => {
+          console.error('Error details:', error);
+          this.error = 'Error creating property: ' + (error.message || error) + ' - Status: ' + (error.status || 'unknown');
+          this.loading = false;
+        }
+      });
+    }
   }
 
   onFileChange(event: Event, index: number, type: 'FACADE' | 'AUTRE'): void {
@@ -140,6 +232,7 @@ export class BienFormComponent implements OnInit {
         imageFormGroup.get('type')?.setValue(type);
 
         // Update the preview
+        // We use the full base64 string with data URL prefix for display
         if (index < this.imagePreviews.length) {
           this.imagePreviews[index] = { base64: base64String, type };
         } else {

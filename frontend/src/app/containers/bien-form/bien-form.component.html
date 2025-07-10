@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h1 class="page-title mb-4">Create New Property</h1>
+  <h1 class="page-title mb-4">{{ pageTitle }}</h1>
 
   <div *ngIf="error" class="alert alert-danger">
     {{ error }}
@@ -139,7 +139,7 @@
               <div class="image-preview">
                 <!-- Image preview -->
                 <div *ngIf="i < imagePreviews.length" class="preview-container">
-                  <img [src]="imagePreviews[i].base64" class="preview-image">
+                  <img [src]="imagePreviews[i].base64" class="preview-image" alt="Image preview">
                   <span class="image-type-badge" [ngClass]="{'badge-facade': imagePreviews[i].type === 'FACADE', 'badge-other': imagePreviews[i].type === 'AUTRE'}">
                     {{ imagePreviews[i].type === 'FACADE' ? 'Façade' : 'Other' }}
                   </span>
@@ -172,7 +172,7 @@
       </button>
       <button type="submit" class="btn-save" [disabled]="loading">
         <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
-        <i *ngIf="!loading" class="bi bi-check-circle me-1"></i> Save Property
+        <i *ngIf="!loading" class="bi bi-check-circle me-1"></i> {{ saveButtonText }}
       </button>
     </div>
   </form>

@@ -20,12 +20,14 @@
   color: var(--text-light);
 }
 
-/* Back button styling */
-.back-button-container {
+/* Navigation buttons styling */
+.navigation-buttons {
+  display: flex;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.btn-back {
+.btn-back, .btn-edit {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -44,8 +46,22 @@
   transform: translateX(-5px);
 }
 
-.btn-back i {
+.btn-edit {
+  background-color: rgba(74, 107, 255, 0.2);
+  border-color: var(--primary-color);
+}
+
+.btn-edit:hover {
+  background-color: rgba(74, 107, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.btn-back i, .btn-edit i {
   font-size: 1.2rem;
+}
+
+.btn-edit i {
+  color: var(--primary-color);
 }
 
 /* Loading container */

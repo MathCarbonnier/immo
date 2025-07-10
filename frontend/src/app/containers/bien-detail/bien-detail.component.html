@@ -1,9 +1,13 @@
 <div class="property-detail-container">
-  <!-- Back button -->
-  <div class="back-button-container">
+  <!-- Navigation buttons -->
+  <div class="navigation-buttons">
     <button class="btn-back" (click)="goBack()">
       <i class="bi bi-arrow-left"></i> 
       <span>Retour à la liste</span>
+    </button>
+    <button *ngIf="bien" class="btn-edit" (click)="editBien()">
+      <i class="bi bi-pencil"></i> 
+      <span>Modifier</span>
     </button>
   </div>
 
