@@ -54,7 +54,7 @@ public class Bien {
     @Column
     private String ville;
 
-    @Column
+    @Column(name = "code_postal")
     private String codePostal;
 
     @Column

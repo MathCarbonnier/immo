@@ -1,14 +1,6 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ViewChild } from '@angular/core';
-import { GoogleMap, MapMarker } from '@angular/google-maps';
-
-export interface AddressInfo {
-  street: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-}
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { GeocodingService, AddressInfo } from '../../services/geocoding.service';
+import * as maplibregl from 'maplibre-gl';
 
 @Component({
   selector: 'app-map',
@@ -20,173 +12,172 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   @Input() longitude: number | null = null;
   @Output() positionChanged = new EventEmitter<{ latitude: number, longitude: number }>();
   @Output() addressChanged = new EventEmitter<AddressInfo>();
-  @ViewChild(GoogleMap) googleMap!: GoogleMap;
+  @ViewChild('mapContainer') mapContainer!: ElementRef;
 
-  geocoder: google.maps.Geocoder;
+  // MapLibre GL JS map and marker
+  private map!: maplibregl.Map;
+  private marker!: maplibregl.Marker;
 
-  // Google Maps options
-  mapOptions: google.maps.MapOptions = {};
-  center: google.maps.LatLngLiteral = { lat: 48.856614, lng: 2.3522219 }; // Paris, France
-  zoom = 13;
-  markerOptions: google.maps.MarkerOptions = { draggable: true };
-  markerPosition: google.maps.LatLngLiteral = { lat: 48.856614, lng: 2.3522219 };
-
+  // Default map settings
   private defaultLatitude = 48.856614; // Paris, France
   private defaultLongitude = 2.3522219;
+  private defaultZoom = 13;
   private mapInitialized = false;
 
-  constructor() {
-    // Initialize the geocoder
-    this.geocoder = new google.maps.Geocoder();
-  }
+  constructor(private geocodingService: GeocodingService) {}
 
   ngOnInit(): void {
-    // Initialize map options
-    this.mapOptions = {
-      center: this.center,
-      zoom: this.zoom,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: false
-    };
-
-    // Set initial marker position if coordinates are provided
-    this.updateMarkerPosition();
+    // No initialization in ngOnInit, we'll initialize the map in ngAfterViewInit
+    // when the DOM element is available
   }
 
   ngAfterViewInit(): void {
-    // Add a small delay before initializing the map to ensure the container is fully rendered
-    setTimeout(() => {
-      this.mapInitialized = true;
-      // Force the map to recalculate its dimensions
-      if (this.googleMap && this.googleMap.googleMap) {
-        google.maps.event.trigger(this.googleMap.googleMap, 'resize');
-      }
-    }, 100);
+    // Initialize the map after the view is initialized
+    this.initializeMap();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // If latitude/longitude inputs change
-    if (changes['latitude'] || changes['longitude']) {
+    // If latitude/longitude inputs change and map is initialized
+    if ((changes['latitude'] || changes['longitude']) && this.mapInitialized) {
       this.updateMarkerPosition();
     }
   }
 
   ngOnDestroy(): void {
-    // No specific cleanup needed for Google Maps
+    // Clean up MapLibre GL JS resources
+    if (this.map) {
+      this.map.remove();
+    }
     this.mapInitialized = false;
   }
 
-  // Handle map click events
-  onMapClick(event: google.maps.MapMouseEvent): void {
-    if (event.latLng) {
-      const lat = event.latLng.lat();
-      const lng = event.latLng.lng();
+  /**
+   * Initialize the MapLibre GL JS map
+   */
+  private initializeMap(): void {
+    if (!this.mapContainer) {
+      console.error('Map container not found');
+      return;
+    }
+
+    // Get initial coordinates
+    const lat = this.latitude || this.defaultLatitude;
+    const lng = this.longitude || this.defaultLongitude;
+
+    // Initialize the map
+    this.map = new maplibregl.Map({
+      container: this.mapContainer.nativeElement,
+      style: {
+        version: 8,
+        sources: {
+          'osm': {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+          }
+        },
+        layers: [
+          {
+            id: 'osm-tiles',
+            type: 'raster',
+            source: 'osm',
+            minzoom: 0,
+            maxzoom: 19
+          }
+        ]
+      },
+      center: [lng, lat],
+      zoom: this.defaultZoom
+    });
+
+    // Add navigation controls (zoom in/out)
+    this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+    // Add initial marker if coordinates are provided
+    this.addMarker(lat, lng);
+
+    // Add click event listener to the map
+    this.map.on('click', (event) => {
+      const { lng, lat } = event.lngLat;
       this.updateMarker(lat, lng);
       this.positionChanged.emit({ latitude: lat, longitude: lng });
       this.getAddressFromLatLng(lat, lng);
-    }
-  }
+    });
 
-  // Handle marker drag events
-  onMarkerDragEnd(event: google.maps.MapMouseEvent): void {
-    if (event.latLng) {
-      const lat = event.latLng.lat();
-      const lng = event.latLng.lng();
-      this.positionChanged.emit({ latitude: lat, longitude: lng });
-      this.getAddressFromLatLng(lat, lng);
-    }
-  }
-
-  // Get address information from latitude and longitude using reverse geocoding
-  private getAddressFromLatLng(lat: number, lng: number): void {
-    const latlng = { lat, lng };
-
-    this.geocoder.geocode({ location: latlng }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
-        const addressComponents = this.extractAddressComponents(results[0]);
-
-        const addressInfo: AddressInfo = {
-          street: addressComponents.street || '',
-          city: addressComponents.city || '',
-          postalCode: addressComponents.postalCode || '',
-          country: addressComponents.country || '',
-          latitude: lat,
-          longitude: lng
-        };
-
-        this.addressChanged.emit(addressInfo);
-      } else {
-        console.error('Geocoder failed due to: ' + status);
-      }
+    // Mark map as initialized
+    this.map.on('load', () => {
+      this.mapInitialized = true;
     });
   }
 
-  // Extract address components from geocoder result
-  private extractAddressComponents(result: google.maps.GeocoderResult): {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  } {
-    const components = {
-      street: '',
-      city: '',
-      postalCode: '',
-      country: ''
-    };
-
-    if (result.address_components) {
-      for (const component of result.address_components) {
-        const types = component.types;
-
-        if (types.includes('street_number')) {
-          components.street = component.long_name + ' ' + components.street;
-        }
-
-        if (types.includes('route')) {
-          components.street = components.street + component.long_name;
-        }
-
-        if (types.includes('locality')) {
-          components.city = component.long_name;
-        }
-
-        if (types.includes('postal_code')) {
-          components.postalCode = component.long_name;
-        }
-
-        if (types.includes('country')) {
-          components.country = component.long_name;
-        }
-      }
+  /**
+   * Add a marker to the map at the specified coordinates
+   */
+  private addMarker(lat: number, lng: number): void {
+    // Remove existing marker if it exists
+    if (this.marker) {
+      this.marker.remove();
     }
 
-    return components;
+    // Create a new marker
+    this.marker = new maplibregl.Marker({
+      draggable: true,
+      color: '#3FB1CE'
+    })
+      .setLngLat([lng, lat])
+      .addTo(this.map);
+
+    // Add drag end event listener to the marker
+    this.marker.on('dragend', () => {
+      const lngLat = this.marker.getLngLat();
+      this.positionChanged.emit({ latitude: lngLat.lat, longitude: lngLat.lng });
+      this.getAddressFromLatLng(lngLat.lat, lngLat.lng);
+    });
   }
 
+  /**
+   * Get address information from latitude and longitude using reverse geocoding
+   */
+  private getAddressFromLatLng(lat: number, lng: number): void {
+    this.geocodingService.reverseGeocode(lat, lng)
+      .subscribe({
+        next: (addressInfo: AddressInfo) => {
+          this.addressChanged.emit(addressInfo);
+        },
+        error: (error) => {
+          console.error('Geocoding failed:', error);
+        }
+      });
+  }
+
+  /**
+   * Update the marker position
+   */
+  private updateMarker(lat: number, lng: number): void {
+    if (this.marker) {
+      this.marker.setLngLat([lng, lat]);
+    } else {
+      this.addMarker(lat, lng);
+    }
+
+    // Center the map on the marker
+    this.map.flyTo({
+      center: [lng, lat],
+      zoom: this.defaultZoom
+    });
+  }
+
+  /**
+   * Update marker position based on input coordinates
+   */
   private updateMarkerPosition(): void {
     const lat = this.latitude || this.defaultLatitude;
     const lng = this.longitude || this.defaultLongitude;
 
-    // Update center and marker position
-    this.center = { lat, lng };
-    this.markerPosition = { lat, lng };
-
-    // If the map is already initialized, update the view
-    if (this.mapInitialized && this.googleMap) {
-      this.googleMap.panTo(this.center);
-    }
-  }
-
-  private updateMarker(lat: number, lng: number): void {
-    this.markerPosition = { lat, lng };
-    this.center = { lat, lng };
-
-    // If the map is already initialized, update the view
-    if (this.mapInitialized && this.googleMap) {
-      this.googleMap.panTo(this.center);
+    // If the map is already initialized, update the marker and view
+    if (this.mapInitialized && this.map) {
+      this.updateMarker(lat, lng);
     }
   }
 }

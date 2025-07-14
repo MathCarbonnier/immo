@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -42,8 +41,7 @@ import { SharedModule } from './shared/shared.module';
     MatDialogContent,
     MatDialogActions,
     MatDialogTitle,
-    SharedModule,
-    GoogleMapsModule
+    SharedModule
   ],
   exports: [
     BienCardComponent

@@ -7,7 +7,7 @@ import { BienService } from '../../services/bien.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { getImageSrcFromBase64 } from '../../utils/image.utils';
 import { NumberWithSpacesPipe } from '../../shared/pipes/number-with-spaces.pipe';
-import { AddressInfo } from '../../components/map/map.component';
+import { AddressInfo } from '../../services/geocoding.service';
 
 @Component({
   selector: 'app-bien-form',
@@ -317,6 +317,7 @@ export class BienFormComponent implements OnInit, OnDestroy {
 
   // Handle address changes from the map component
   onAddressChanged(addressInfo: AddressInfo): void {
+
     console.log('Address changed:', addressInfo);
 
     // Create an object to hold the fields to update
