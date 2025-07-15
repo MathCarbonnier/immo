@@ -94,9 +94,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     // Add navigation controls (zoom in/out)
     this.map.addControl(new NavigationControl(), 'top-right');
 
-    // Add initial marker if coordinates are provided
-    this.addMarker(lat, lng);
-
     // Add click event listener to the map
     this.map.on('click', (event) => {
       const { lng, lat } = event.lngLat;
@@ -105,9 +102,14 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
       this.getAddressFromLatLng(lat, lng);
     });
 
-    // Mark map as initialized
+    // Mark map as initialized and add marker after map is loaded
     this.map.on('load', () => {
       this.mapInitialized = true;
+
+      // Add initial marker if coordinates are provided
+      const initialLat = this.latitude || this.defaultLatitude;
+      const initialLng = this.longitude || this.defaultLongitude;
+      this.addMarker(initialLat, initialLng);
     });
   }
 
@@ -127,6 +129,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     })
       .setLngLat([lng, lat])
       .addTo(this.map);
+
+    console.log('lat, lng');
+    console.log(lat, lng);
 
     // Add drag end event listener to the marker
     this.marker.on('dragend', () => {
@@ -157,14 +162,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   private updateMarker(lat: number, lng: number): void {
     if (this.marker) {
       this.marker.setLngLat([lng, lat]);
+      console.log('lat, lng');
+      console.log(lat, lng);
     } else {
       this.addMarker(lat, lng);
     }
 
-    // Center the map on the marker
+    // Center the map on the marker while preserving the current zoom level
     this.map.flyTo({
       center: [lng, lat],
-      zoom: this.defaultZoom
+      zoom: this.map.getZoom()
     });
   }
 
@@ -177,7 +184,18 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
 
     // If the map is already initialized, update the marker and view
     if (this.mapInitialized && this.map) {
-      this.updateMarker(lat, lng);
+      // Update marker position without changing the zoom level
+      if (this.marker) {
+        this.marker.setLngLat([lng, lat]);
+      } else {
+        this.addMarker(lat, lng);
+      }
+
+      // Center the map on the marker while preserving the current zoom level
+      this.map.flyTo({
+        center: [lng, lat],
+        zoom: this.map.getZoom()
+      });
     }
   }
 }
