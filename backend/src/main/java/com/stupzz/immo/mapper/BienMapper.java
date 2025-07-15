@@ -39,6 +39,8 @@ public class BienMapper {
         dto.setVille(bien.getVille());
         dto.setCodePostal(bien.getCodePostal());
         dto.setPays(bien.getPays());
+        dto.setLatitude(bien.getLatitude());
+        dto.setLongitude(bien.getLongitude());
         dto.setStatus(bien.getStatus());
 
         if (bien.getImages() != null) {
@@ -101,6 +103,8 @@ public class BienMapper {
         bien.setVille(dto.getVille());
         bien.setCodePostal(dto.getCodePostal());
         bien.setPays(dto.getPays());
+        bien.setLatitude(dto.getLatitude());
+        bien.setLongitude(dto.getLongitude());
         bien.setStatus(dto.getStatus());
 
         // Clear existing images and add new ones

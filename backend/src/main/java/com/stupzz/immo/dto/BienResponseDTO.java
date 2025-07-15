@@ -26,6 +26,8 @@ public class BienResponseDTO {
     private String ville;
     private String codePostal;
     private String pays;
+    private Double latitude;
+    private Double longitude;
     private Status status;
     private List<ImageBienResponseDTO> images = new ArrayList<>();
 }

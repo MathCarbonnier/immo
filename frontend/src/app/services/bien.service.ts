@@ -138,15 +138,7 @@ export class BienService {
 
     // Create a clean copy of the bien object to avoid any potential issues
     const cleanBien = {
-      titre: bien.titre,
-      surface: bien.surface,
-      prix: bien.prix,
-      description: bien.description,
-      rue: bien.rue,
-      ville: bien.ville,
-      codePostal: bien.codePostal,
-      pays: bien.pays,
-      status: bien.status,
+      ...bien,
       images: imagesToSend
     };
 

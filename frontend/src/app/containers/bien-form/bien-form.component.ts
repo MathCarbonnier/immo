@@ -186,6 +186,8 @@ export class BienFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
+    console.log('longitude:', this.longitude);
+    console.log('latitude:', this.latitude);
     const bienData: Bien = {
       titre: this.f['titre'].value,
       surface: this.f['surface'].value,
