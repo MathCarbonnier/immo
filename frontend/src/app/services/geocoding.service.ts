@@ -42,7 +42,6 @@ export interface NominatimResponse {
 })
 export class GeocodingService {
   private readonly NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
-  private readonly USER_AGENT = 'ImmoApplication';
 
   constructor(private http: HttpClient) { }
 
@@ -54,7 +53,7 @@ export class GeocodingService {
    */
   reverseGeocode(lat: number, lon: number): Observable<AddressInfo> {
     const url = `${this.NOMINATIM_BASE_URL}/reverse`;
-    
+
     // Nominatim API parameters
     const params = {
       format: 'json',
@@ -64,9 +63,10 @@ export class GeocodingService {
       addressdetails: '1'
     };
 
-    // Headers required by Nominatim usage policy
+    // Headers for the request
+    // Note: 'User-Agent' header is removed as browsers don't allow it to be set via JavaScript
+    // For production, consider implementing a proxy server to add this header server-side
     const headers = {
-      'User-Agent': this.USER_AGENT,
       'Accept-Language': 'fr,en' // Prefer French, then English
     };
 
@@ -81,7 +81,7 @@ export class GeocodingService {
    */
   private extractAddressInfo(response: NominatimResponse, lat: number, lon: number): AddressInfo {
     const address = response.address;
-    
+
     // Build street address from house number and road
     let street = '';
     if (address.house_number) {
@@ -93,7 +93,7 @@ export class GeocodingService {
 
     // Get city (try different fields as Nominatim returns different structures)
     const city = address.city || address.town || address.village || address.municipality || '';
-    
+
     return {
       street,
       city,

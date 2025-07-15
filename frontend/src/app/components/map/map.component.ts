@@ -125,13 +125,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     // Create a new marker
     this.marker = new Marker({
       draggable: true,
-      color: '#3FB1CE'
     })
       .setLngLat([lng, lat])
       .addTo(this.map);
-
-    console.log('lat, lng');
-    console.log(lat, lng);
 
     // Add drag end event listener to the marker
     this.marker.on('dragend', () => {
@@ -162,8 +158,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   private updateMarker(lat: number, lng: number): void {
     if (this.marker) {
       this.marker.setLngLat([lng, lat]);
-      console.log('lat, lng');
-      console.log(lat, lng);
     } else {
       this.addMarker(lat, lng);
     }
