@@ -1,5 +1,91 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Angular Material Dialog Customization */
+.custom-dialog-container {
+  /* Make sure dialog is properly centered */
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+
+  /* Add some styling to the dialog to match app theme */
+  background-color: var(--card-bg) !important;
+  color: var(--text-light) !important;
+  padding: 24px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+
+  /* Ensure proper positioning */
+  position: relative !important;
+  z-index: 10000 !important;
+
+  /* Animation for the dialog */
+  animation: dialogFadeIn 0.3s ease-out;
+}
+
+/* Ensure all parts of the Angular Material dialog have the correct background */
+.mat-mdc-dialog-container, 
+.mat-mdc-dialog-surface, 
+.mdc-dialog__container, 
+.mdc-dialog__surface {
+  background-color: var(--card-bg) !important;
+  color: var(--text-light) !important;
+}
+
+.custom-backdrop {
+  /* Semi-transparent dark backdrop */
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(2px);
+
+  /* Make sure it covers the entire viewport */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+
+  /* High z-index to appear above everything except the dialog */
+  z-index: 9998 !important;
+
+  /* Animation for the backdrop */
+  animation: backdropFadeIn 0.2s ease-out;
+}
+
+/* Make sure the dialog container is centered and positioned above everything */
+.cdk-overlay-pane {
+  /* Center the dialog */
+  margin: auto !important;
+
+  /* Position fixed to ensure it's relative to the viewport */
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  /* High z-index to appear above everything */
+  z-index: 9999 !important;
+}
+
+/* Animations */
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Global CSS Variables */
 :root {
   /* Common variables */
@@ -26,41 +112,24 @@ html, body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-/* Custom Dialog Styles */
-.custom-dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.custom-dialog-container {
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  max-width: 90%;
-  max-height: 90vh;
-  overflow: auto;
-  padding: 24px;
-  position: relative;
-  margin: auto;
-}
+/* Custom Dialog Styles - These are now merged with the Angular Material Dialog styles above */
 
 /* Dialog title styles */
 .dialog-title {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  font-weight: 700;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 16px;
   text-align: center;
-  border-bottom: 2px solid #3f51b5;
+  border-bottom: 1px solid var(--card-hover-bg);
   padding-bottom: 8px;
+}
+
+/* Ensure mat-dialog-title has the correct background */
+mat-dialog-title {
+  background-color: var(--card-bg) !important;
 }
 
 /* Dialog content styles */
@@ -69,12 +138,15 @@ html, body {
   width: 100%;
   text-align: center;
   overflow-y: auto;
+  color: var(--text-light);
 }
 
 /* Dialog actions styles */
 .dialog-actions {
   display: flex;
   justify-content: center;
+  gap: 1rem;
   margin-top: 16px;
   padding: 8px 0;
+  border-top: 1px solid var(--card-hover-bg);
 }

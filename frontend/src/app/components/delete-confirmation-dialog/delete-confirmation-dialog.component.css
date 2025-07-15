@@ -12,6 +12,45 @@
   min-width: 250px;
 }
 
+/* Card styling to match application design */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  border: none;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-img-top {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.card-text strong {
+  color: var(--text-light);
+}
+
 @media (max-width: 768px) {
   .property-card {
     flex: 0 0 100%;
@@ -22,49 +61,61 @@ mat-dialog-content {
   max-height: 70vh;
   width: 100%;
   text-align: center;
+  background-color: var(--card-bg) !important;
+  color: var(--text-light) !important;
 }
 
-/* Center the dialog on the page */
-::ng-deep .mat-mdc-dialog-container {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px;
+/* Ensure all text elements in the dialog have the correct color */
+mat-dialog-content p {
+  color: var(--text-light) !important;
 }
 
-::ng-deep .cdk-overlay-pane {
-  margin: auto;
-}
+/* Dialog styling is now handled by global styles */
 
-/* Make the title stand out more */
-.dialog-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 16px;
-  text-align: center;
-  border-bottom: 2px solid #3f51b5;
-  padding-bottom: 8px;
-}
-
-/* Button styles matching the list view */
+/* Button styles matching the application design */
 .btn {
-  transition: all 0.2s;
-  min-width: 100px;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  min-width: 120px;
 }
 
 /* Style for the cancel button */
 .cancel-button {
-  margin-right: 8px;
+  background-color: var(--card-hover-bg);
+  color: var(--text-muted);
+}
+
+.cancel-button:hover {
+  background-color: var(--card-hover-bg);
+  transform: translateY(-2px);
 }
 
 /* Style for the delete button */
 .delete-button {
+  background: var(--primary-gradient);
   color: white;
+  box-shadow: 0 4px 10px rgba(255, 95, 109, 0.3);
+}
+
+.delete-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 95, 109, 0.4);
 }
 
 /* Ensure buttons have proper spacing */
 mat-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
   margin-top: 16px;
   padding: 8px 0;
+  background-color: var(--card-bg) !important;
 }

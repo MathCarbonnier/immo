@@ -99,7 +99,11 @@ export class BienListComponent implements OnInit {
     // Open the confirmation dialog
     const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
       width: '600px',
-      data: { biens: selectedProperties }
+      data: { biens: selectedProperties },
+      disableClose: true,
+      autoFocus: true,
+      panelClass: 'custom-dialog-container',
+      backdropClass: 'custom-backdrop'
     });
 
     // Handle the dialog result
