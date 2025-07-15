@@ -43,6 +43,10 @@ export class BienFormComponent implements OnInit, OnDestroy {
   pageTitle = 'Ajouter un bien';
   saveButtonText = 'Enregistrer';
 
+  // Properties to store map coordinates
+  latitude?: number;
+  longitude?: number;
+
   constructor(
     private formBuilder: FormBuilder,
     private bienService: BienService,
@@ -96,6 +100,12 @@ export class BienFormComponent implements OnInit, OnDestroy {
             pays: bien.pays || '',
             status: bien.status
           });
+
+          // Set latitude and longitude if available
+          if (bien.latitude && bien.longitude) {
+            this.latitude = bien.latitude;
+            this.longitude = bien.longitude;
+          }
 
           // Format the price with spaces
           // This needs to be done after patchValue to ensure the directive works correctly
@@ -185,6 +195,8 @@ export class BienFormComponent implements OnInit, OnDestroy {
       ville: this.f['ville'].value,
       codePostal: this.f['codePostal'].value,
       pays: this.f['pays'].value,
+      latitude: this.latitude,
+      longitude: this.longitude,
       status: this.f['status'].value,
       images: this.imagePreviews
     };
@@ -315,9 +327,15 @@ export class BienFormComponent implements OnInit, OnDestroy {
   addressUpdateSuccess = '';
   addressUpdateTimeout: any = null;
 
+  // Handle position changes from the map component
+  onPositionChanged(position: { latitude: number, longitude: number }): void {
+    console.log('Position changed:', position);
+    this.latitude = position.latitude;
+    this.longitude = position.longitude;
+  }
+
   // Handle address changes from the map component
   onAddressChanged(addressInfo: AddressInfo): void {
-
     console.log('Address changed:', addressInfo);
 
     // Create an object to hold the fields to update

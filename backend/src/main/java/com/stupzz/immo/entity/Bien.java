@@ -60,6 +60,12 @@ public class Bien {
     @Column
     private String pays;
 
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.A_VENDRE;

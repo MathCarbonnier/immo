@@ -124,6 +124,9 @@
           <!-- Map Component -->
           <div class="map-container mb-3">
             <app-map 
+              [latitude]="latitude"
+              [longitude]="longitude"
+              (positionChanged)="onPositionChanged($event)"
               (addressChanged)="onAddressChanged($event)"
             ></app-map>
           </div>

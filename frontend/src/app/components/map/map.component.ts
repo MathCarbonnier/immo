@@ -8,8 +8,8 @@ import * as maplibregl from 'maplibre-gl';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-  @Input() latitude: number | null = null;
-  @Input() longitude: number | null = null;
+  @Input() latitude?: number;
+  @Input() longitude?: number;
   @Output() positionChanged = new EventEmitter<{ latitude: number, longitude: number }>();
   @Output() addressChanged = new EventEmitter<AddressInfo>();
   @ViewChild('mapContainer') mapContainer!: ElementRef;
