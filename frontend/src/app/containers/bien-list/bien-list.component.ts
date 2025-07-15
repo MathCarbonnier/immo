@@ -22,7 +22,7 @@ export class BienListComponent implements OnInit {
   // Status filter
   selectedStatus: BienStatus | null = null;
   statusOptions: { value: BienStatus | null, label: string }[] = [
-    { value: null, label: 'All Properties' },
+    { value: null, label: 'Tous les biens' },
     { value: BienStatus.A_VENDRE, label: getBienStatusLabel(BienStatus.A_VENDRE) },
     { value: BienStatus.EN_COURS_DE_VENTE, label: getBienStatusLabel(BienStatus.EN_COURS_DE_VENTE) },
     { value: BienStatus.VENDU, label: getBienStatusLabel(BienStatus.VENDU) }
@@ -75,7 +75,7 @@ export class BienListComponent implements OnInit {
   toggleSelectBien(id: any): void {
     // Ensure id is treated as a number
     const numericId = Number(id);
-    
+
     const index = this.selectedBiens.indexOf(numericId);
     if (index === -1) {
       this.selectedBiens.push(numericId);

@@ -147,7 +147,7 @@ export class BienFormComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error loading property for editing', err);
-          this.error = 'Error loading property: ' + (err.message || err);
+          this.error = 'Erreur lors du chargement du bien : ' + (err.message || err);
           this.loading = false;
         }
       });
@@ -209,7 +209,7 @@ export class BienFormComponent implements OnInit, OnDestroy {
         },
         error: error => {
           console.error('Error details:', error);
-          this.error = 'Error updating property: ' + (error.message || error) + ' - Status: ' + (error.status || 'unknown');
+          this.error = 'Erreur lors de la mise à jour du bien : ' + (error.message || error) + ' - Statut : ' + (error.status || 'inconnu');
           this.loading = false;
         }
       });
@@ -221,7 +221,7 @@ export class BienFormComponent implements OnInit, OnDestroy {
         },
         error: error => {
           console.error('Error details:', error);
-          this.error = 'Error creating property: ' + (error.message || error) + ' - Status: ' + (error.status || 'unknown');
+          this.error = 'Erreur lors de la création du bien : ' + (error.message || error) + ' - Statut : ' + (error.status || 'inconnu');
           this.loading = false;
         }
       });
@@ -236,14 +236,14 @@ export class BienFormComponent implements OnInit, OnDestroy {
 
       // Check if file is an image
       if (!file.type.startsWith('image/')) {
-        this.error = 'Please select an image file';
+        this.error = 'Veuillez sélectionner un fichier image';
         return;
       }
 
       // Check file size (limit to 1MB)
       const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
       if (file.size > maxSizeInBytes) {
-        this.error = 'Image file is too large. Please select an image smaller than 1MB.';
+        this.error = 'Le fichier image est trop volumineux. Veuillez sélectionner une image de moins de 1 Mo.';
         return;
       }
 
@@ -276,7 +276,7 @@ export class BienFormComponent implements OnInit, OnDestroy {
       };
       reader.onerror = (error) => {
         console.error('Error reading file:', error);
-        this.error = 'Error reading file';
+        this.error = 'Erreur lors de la lecture du fichier';
       };
       reader.readAsDataURL(file);
     }

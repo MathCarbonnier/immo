@@ -1,13 +1,13 @@
 <div class="bien-list-container">
   <div class="header-section">
-    <h1 class="page-title">Property Listings</h1>
+    <h1 class="page-title">Liste des biens</h1>
   </div>
 
   <!-- Action buttons -->
   <div class="action-buttons">
     <div class="button-group">
       <button class="btn btn-primary" (click)="navigateToNew()">
-        <i class="bi bi-plus-circle"></i> Add Listing
+        <i class="bi bi-plus-circle"></i> Ajouter une annonce
       </button>
 
       <button class="btn" 
@@ -15,14 +15,14 @@
               [class.btn-active]="deleteMode" 
               (click)="toggleDeleteMode()">
         <i class="bi" [class.bi-trash]="!deleteMode" [class.bi-x-circle]="deleteMode"></i>
-        {{ deleteMode ? 'Cancel' : 'Deletion Mode' }}
+        {{ deleteMode ? 'Annuler' : 'Mode suppression' }}
       </button>
 
       <button *ngIf="deleteMode" 
               class="btn btn-danger" 
               [disabled]="selectedBiens.length === 0"
               (click)="deleteSelected()">
-        <i class="bi bi-trash"></i> Delete Selected ({{ selectedBiens.length }})
+        <i class="bi bi-trash"></i> Supprimer la sélection ({{ selectedBiens.length }})
       </button>
     </div>
 
@@ -30,7 +30,7 @@
     <div class="filter-group">
       <label for="statusFilter">
         <i class="bi bi-funnel"></i>
-        Filter by status:
+        Filtrer par statut :
       </label>
       <select id="statusFilter" class="form-select status-filter" 
               [ngModel]="selectedStatus" 
@@ -45,31 +45,31 @@
   <!-- Loading indicator -->
   <div *ngIf="loading" class="loading-container">
     <div class="spinner">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">Chargement...</span>
     </div>
-    <p class="loading-text">Loading properties...</p>
+    <p class="loading-text">Chargement des biens...</p>
   </div>
 
   <!-- Error message -->
   <div *ngIf="error" class="error-container">
     <div class="error-message">
-      An error occurred while loading properties.
-      <button class="btn btn-outline" (click)="loadBiens()">Retry</button>
+      Une erreur est survenue lors du chargement des biens.
+      <button class="btn btn-outline" (click)="loadBiens()">Réessayer</button>
     </div>
   </div>
 
   <!-- Empty state -->
   <div *ngIf="!loading && !error && biens.length === 0" class="empty-state">
     <i class="bi bi-house-x empty-icon"></i>
-    <p class="empty-text">No properties available</p>
-    <button class="btn btn-primary" (click)="navigateToNew()">Add Listing</button>
+    <p class="empty-text">Aucun bien disponible</p>
+    <button class="btn btn-primary" (click)="navigateToNew()">Ajouter une annonce</button>
   </div>
 
   <!-- No results for filter -->
   <div *ngIf="!loading && !error && biens.length > 0 && filteredBiens.length === 0" class="empty-state">
     <i class="bi bi-filter-circle-x empty-icon"></i>
-    <p class="empty-text">No properties match the selected filter</p>
-    <button class="btn btn-outline" (click)="onStatusFilterChange(null)">Clear Filter</button>
+    <p class="empty-text">Aucun bien ne correspond au filtre sélectionné</p>
+    <button class="btn btn-outline" (click)="onStatusFilterChange(null)">Effacer le filtre</button>
   </div>
 
   <!-- Property grid -->

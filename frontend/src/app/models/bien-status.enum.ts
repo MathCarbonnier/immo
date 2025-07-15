@@ -20,6 +20,6 @@ export function getBienStatusLabel(status: BienStatus): string {
     case BienStatus.VENDU:
       return 'Vendu';
     default:
-      return 'Unknown';
+      return 'Inconnu';
   }
 }

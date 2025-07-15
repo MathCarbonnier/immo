@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
     <div class="app-wrapper">
       <header class="app-header">
         <div class="header-content">
-          <div class="logo-container">
+          <div class="logo-container" routerLink="/biens" style="cursor: pointer;">
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M9 22V12h6v10" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -19,12 +19,12 @@ import { Component } from '@angular/core';
             </svg>
           </div>
           <nav class="main-nav">
-            <a routerLink="/biens" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Listings</a>
-            <a routerLink="/biens/new" routerLinkActive="active" class="nav-link">Add Listing</a>
+            <a routerLink="/biens" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Annonces</a>
+            <a routerLink="/biens/new" routerLinkActive="active" class="nav-link">Ajouter une annonce</a>
           </nav>
           <div class="language-selector">
             <button class="lang-btn">
-              EN <i class="bi bi-chevron-down"></i>
+              FR <i class="bi bi-chevron-down"></i>
             </button>
           </div>
         </div>
@@ -145,5 +145,5 @@ import { Component } from '@angular/core';
   `]
 })
 export class AppComponent {
-  title = 'Property Listings';
+  title = 'Annonces Immobilières';
 }

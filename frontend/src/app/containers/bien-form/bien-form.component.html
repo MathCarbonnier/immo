@@ -14,11 +14,11 @@
     <!-- Main Information Section -->
     <div class="form-section">
       <h3 class="section-title">
-        <i class="bi bi-info-circle me-2"></i>Main Information
+        <i class="bi bi-info-circle me-2"></i>Informations principales
       </h3>
       <div class="form-fields">
         <div class="mb-3">
-          <label for="titre" class="form-label">Title</label>
+          <label for="titre" class="form-label">Titre</label>
           <input 
             type="text" 
             class="form-control" 
@@ -27,12 +27,12 @@
             [ngClass]="{ 'is-invalid': submitted && f['titre'].errors }"
           >
           <div *ngIf="submitted && f['titre'].errors" class="invalid-feedback">
-            <div *ngIf="f['titre'].errors['required']">Title is required</div>
+            <div *ngIf="f['titre'].errors['required']">Le titre est requis</div>
           </div>
         </div>
 
         <div class="mb-3">
-          <label for="status" class="form-label">Status</label>
+          <label for="status" class="form-label">Statut</label>
           <select 
             class="form-select" 
             id="status" 
@@ -44,7 +44,7 @@
             <option [value]="BienStatus.VENDU">{{ getBienStatusLabel(BienStatus.VENDU) }}</option>
           </select>
           <div *ngIf="submitted && f['status'].errors" class="invalid-feedback">
-            <div *ngIf="f['status'].errors['required']">Status is required</div>
+            <div *ngIf="f['status'].errors['required']">Le statut est requis</div>
           </div>
         </div>
 
@@ -62,15 +62,15 @@
                 >
                 <span class="input-group-text">m²</span>
                 <div *ngIf="submitted && f['surface'].errors" class="invalid-feedback">
-                  <div *ngIf="f['surface'].errors['required']">Surface is required</div>
-                  <div *ngIf="f['surface'].errors['min']">Surface must be greater than 0</div>
+                  <div *ngIf="f['surface'].errors['required']">La surface est requise</div>
+                  <div *ngIf="f['surface'].errors['min']">La surface doit être supérieure à 0</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
-              <label for="prix" class="form-label">Price (€)</label>
+              <label for="prix" class="form-label">Prix (€)</label>
               <div class="input-group">
                 <input 
                   type="text" 
@@ -82,8 +82,8 @@
                 >
                 <span class="input-group-text">€</span>
                 <div *ngIf="submitted && f['prix'].errors" class="invalid-feedback">
-                  <div *ngIf="f['prix'].errors['required']">Price is required</div>
-                  <div *ngIf="f['prix'].errors['min']">Price must be greater than 0</div>
+                  <div *ngIf="f['prix'].errors['required']">Le prix est requis</div>
+                  <div *ngIf="f['prix'].errors['min']">Le prix doit être supérieur à 0</div>
                 </div>
               </div>
             </div>
@@ -99,13 +99,13 @@
       </h3>
       <div class="form-fields">
         <div class="mb-3">
-          <label for="description" class="form-label">Property Description</label>
+          <label for="description" class="form-label">Description du bien</label>
           <textarea 
             class="form-control" 
             id="description" 
             formControlName="description" 
             rows="4"
-            placeholder="Describe the property features, location, and other important details..."
+            placeholder="Décrivez les caractéristiques du bien, son emplacement et autres détails importants..."
           ></textarea>
         </div>
       </div>
@@ -114,12 +114,12 @@
     <!-- Location Section -->
     <div class="form-section">
       <h3 class="section-title">
-        <i class="bi bi-geo-alt me-2"></i>Location
+        <i class="bi bi-geo-alt me-2"></i>Localisation
       </h3>
       <div class="form-fields">
         <div class="mb-3">
-          <label class="form-label">Property Address</label>
-          <p class="text-muted small">Select a location on the map or enter the address details manually.</p>
+          <label class="form-label">Adresse du bien</label>
+          <p class="text-muted small">Sélectionnez un emplacement sur la carte ou saisissez l'adresse manuellement.</p>
 
           <!-- Map Component -->
           <div class="map-container mb-3">
@@ -138,49 +138,49 @@
 
           <!-- Street Address Field -->
           <div class="mt-3">
-            <label for="rue" class="form-label">Street Address</label>
+            <label for="rue" class="form-label">Rue</label>
             <input 
               type="text" 
               class="form-control" 
               id="rue" 
               formControlName="rue" 
-              placeholder="Enter street address"
+              placeholder="Saisissez l'adresse"
             >
           </div>
 
           <!-- City Field -->
           <div class="mt-3">
-            <label for="ville" class="form-label">City</label>
+            <label for="ville" class="form-label">Ville</label>
             <input 
               type="text" 
               class="form-control" 
               id="ville" 
               formControlName="ville" 
-              placeholder="Enter city"
+              placeholder="Saisissez la ville"
             >
           </div>
 
           <!-- Postal Code Field -->
           <div class="mt-3">
-            <label for="codePostal" class="form-label">Postal Code</label>
+            <label for="codePostal" class="form-label">Code postal</label>
             <input 
               type="text" 
               class="form-control" 
               id="codePostal" 
               formControlName="codePostal" 
-              placeholder="Enter postal code"
+              placeholder="Saisissez le code postal"
             >
           </div>
 
           <!-- Country Field -->
           <div class="mt-3">
-            <label for="pays" class="form-label">Country</label>
+            <label for="pays" class="form-label">Pays</label>
             <input 
               type="text" 
               class="form-control" 
               id="pays" 
               formControlName="pays" 
-              placeholder="Enter country"
+              placeholder="Saisissez le pays"
             >
           </div>
         </div>
@@ -196,7 +196,7 @@
         <!-- No images message -->
         <div *ngIf="images.length === 0" class="alert alert-info">
           <i class="bi bi-info-circle me-2"></i>
-          No images added yet. Use the buttons below to add property images.
+          Aucune image ajoutée. Utilisez les boutons ci-dessous pour ajouter des images du bien.
         </div>
 
         <!-- Image form groups -->
@@ -205,26 +205,26 @@
             <div class="image-header">
               <h6 class="mb-0">Image {{ i + 1 }}</h6>
               <button type="button" class="btn-delete" (click)="removeImageForm(i)">
-                <i class="bi bi-trash"></i> Remove
+                <i class="bi bi-trash"></i> Supprimer
               </button>
             </div>
 
             <div class="image-content">
               <div class="image-form">
                 <div class="mb-2">
-                  <label class="form-label">Image Type</label>
+                  <label class="form-label">Type d'image</label>
                   <select 
                     class="form-select" 
                     [formControl]="getFormControl(imageGroup, 'type')"
                     (change)="onTypeChange($event, imageGroup)"
                   >
                     <option value="FACADE">Façade</option>
-                    <option value="AUTRE">Other</option>
+                    <option value="AUTRE">Autre</option>
                   </select>
                 </div>
 
                 <div class="mb-2">
-                  <label class="form-label">Image File</label>
+                  <label class="form-label">Fichier image</label>
                   <input 
                     type="file" 
                     class="form-control" 
@@ -239,12 +239,12 @@
                 <div *ngIf="i < imagePreviews.length" class="preview-container">
                   <img [src]="imagePreviews[i].base64" class="preview-image" alt="Image preview">
                   <span class="image-type-badge" [ngClass]="{'badge-facade': imagePreviews[i].type === 'FACADE', 'badge-other': imagePreviews[i].type === 'AUTRE'}">
-                    {{ imagePreviews[i].type === 'FACADE' ? 'Façade' : 'Other' }}
+                    {{ imagePreviews[i].type === 'FACADE' ? 'Façade' : 'Autre' }}
                   </span>
                 </div>
                 <div *ngIf="!(i < imagePreviews.length)" class="no-preview">
                   <i class="bi bi-image"></i>
-                  <span>No image selected</span>
+                  <span>Aucune image sélectionnée</span>
                 </div>
               </div>
             </div>
@@ -254,10 +254,10 @@
         <!-- Add image buttons -->
         <div class="image-buttons">
           <button type="button" class="btn-add-facade" (click)="addImageForm('FACADE')">
-            <i class="bi bi-plus-circle"></i> Add Façade Image
+            <i class="bi bi-plus-circle"></i> Ajouter une image de façade
           </button>
           <button type="button" class="btn-add-other" (click)="addImageForm('AUTRE')">
-            <i class="bi bi-plus-circle"></i> Add Other Image
+            <i class="bi bi-plus-circle"></i> Ajouter une autre image
           </button>
         </div>
       </div>
@@ -266,7 +266,7 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="button" class="btn-cancel" (click)="cancelForm()">
-        <i class="bi bi-x-circle me-1"></i> Cancel
+        <i class="bi bi-x-circle me-1"></i> Annuler
       </button>
       <button type="submit" class="btn-save" [disabled]="loading">
         <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
