@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { GeocodingService, AddressInfo } from '../../services/geocoding.service';
-import * as maplibregl from 'maplibre-gl';
+import { Map, Marker, NavigationControl } from 'maplibre-gl';
 
 @Component({
   selector: 'app-map',
@@ -15,8 +15,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   @ViewChild('mapContainer') mapContainer!: ElementRef;
 
   // MapLibre GL JS map and marker
-  private map!: maplibregl.Map;
-  private marker!: maplibregl.Marker;
+  private map!: Map;
+  private marker!: Marker;
 
   // Default map settings
   private defaultLatitude = 48.856614; // Paris, France
@@ -65,7 +65,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     const lng = this.longitude || this.defaultLongitude;
 
     // Initialize the map
-    this.map = new maplibregl.Map({
+    this.map = new Map({
       container: this.mapContainer.nativeElement,
       style: {
         version: 8,
@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     });
 
     // Add navigation controls (zoom in/out)
-    this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    this.map.addControl(new NavigationControl(), 'top-right');
 
     // Add initial marker if coordinates are provided
     this.addMarker(lat, lng);
@@ -121,7 +121,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
     }
 
     // Create a new marker
-    this.marker = new maplibregl.Marker({
+    this.marker = new Marker({
       draggable: true,
       color: '#3FB1CE'
     })
