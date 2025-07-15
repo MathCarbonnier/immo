@@ -6,6 +6,7 @@ import { BienService } from '../../services/bien.service';
 import { getImageSrcFromBase64 } from '../../utils/image.utils';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CarouselComponent } from '../../components/carousel/carousel.component';
+import { MapComponent } from '../../components/map/map.component';
 
 @Component({
   selector: 'app-bien-detail',

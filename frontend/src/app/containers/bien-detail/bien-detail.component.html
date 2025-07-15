@@ -77,6 +77,38 @@
       </div>
     </section>
 
+    <!-- Address and Map Section -->
+    <section *ngIf="bien" class="address-map-section">
+      <h2 class="section-title">
+        <i class="bi bi-geo-alt-fill me-2"></i>Localisation
+      </h2>
+      <div class="address-map-content">
+        <!-- Address Information -->
+        <div class="address-info">
+          <div *ngIf="bien.rue" class="address-item">
+            <i class="bi bi-house-door-fill me-2"></i>
+            <span>{{ bien.rue }}</span>
+          </div>
+          <div *ngIf="bien.codePostal || bien.ville" class="address-item">
+            <i class="bi bi-building-fill me-2"></i>
+            <span>{{ bien.codePostal }} {{ bien.ville }}</span>
+          </div>
+          <div *ngIf="bien.pays" class="address-item">
+            <i class="bi bi-flag-fill me-2"></i>
+            <span>{{ bien.pays }}</span>
+          </div>
+        </div>
+
+        <!-- Map Component -->
+        <div *ngIf="bien.latitude && bien.longitude" class="map-wrapper">
+          <app-map [latitude]="bien.latitude" [longitude]="bien.longitude"></app-map>
+        </div>
+        <div *ngIf="!bien.latitude || !bien.longitude" class="no-map-info">
+          <p class="text-muted">Aucune coordonnée géographique disponible pour ce bien</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Other Images Section -->
     <section *ngIf="otherImages.length > 0" class="other-images-section">
       <h2 class="section-title">
